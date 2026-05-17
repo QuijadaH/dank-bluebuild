@@ -2,3 +2,4 @@
 Description=Hyprland Session Target
 Requires=graphical-session.target
 After=graphical-session.target
+Wants=xdg-desktop-autostart.target

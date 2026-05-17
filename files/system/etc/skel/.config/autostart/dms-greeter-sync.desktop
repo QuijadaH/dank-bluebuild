@@ -1,0 +1,8 @@
+#!/usr/bin/env xdg-open
+[Desktop Entry]
+Type=Application
+Name=Setup
+Exec=xdg-terminal-exec -e bash -c "/usr/libexec/dank-blue-build/dms-greeter-sync; exec bash"
+Icon=utilities-terminal
+Terminal=false
+Categories=Utility;

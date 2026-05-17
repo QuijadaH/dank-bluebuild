@@ -23,25 +23,23 @@ modules:
       packages:
       - hyprland
       - hyprland-guiutils
-      - cmake
-      - gcc-c++
       - grim
-      - pkgconf-pkg-config
       - qt5-qtwayland
       - qt6-qtwayland
       - slurp
       - wev
       - xdg-desktop-portal-hyprland
       - xwaylandvideobridge    # See https://wiki.hypr.land/Useful-Utilities/Screen-Sharing/#xwayland
-
+      
   - from-file: ./common/dms-modules.yml
+  - from-file: ./common/hyprpm-modules.yml
   - from-file: ./common/common-modules.yml
         
   - type: script
     snippets:
-      - "chmod +x /etc/skel/.config/hypr/scripts/restart-portals.sh"
-      - "chmod +x /etc/skel/.local/bin/desktop-setup.sh"
       - "chmod +x /usr/libexec/dank-blue-build/skel-init"
+      - "chmod +x /usr/libexec/hyprland/restart-portals"
+      - "chmod +x /usr/libexec/dank-blue-build/dms-greeter-sync"
 
   - type: systemd
     system:

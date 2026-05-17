@@ -1,0 +1,12 @@
+modules:
+  - type: dnf
+    install:
+      packages:
+      - cmake
+      - gcc-c++
+      - libglvnd-devel
+      - libglvnd-gles
+      - mesa-libGL-devel
+      - pkgconf-pkg-config
+      - udis86
+      - udis86-devel

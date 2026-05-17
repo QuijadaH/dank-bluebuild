@@ -41,10 +41,15 @@ modules:
         repo:
           title: Flathub (system)
         install: 
-          - io.github.kolunmi.Bazaar
           - com.github.tchx84.Flatseal
           - io.github.flattool.Warehouse
       - notify: false
         scope: user
         repo:
           title: Flathub (user)
+        install:
+          - io.github.celluloid_player.Celluloid
+          - org.onlyoffice.desktopeditors
+          - org.mozilla.firefox
+          - org.gnome.Loupe
+          - org.gnome.Papers
