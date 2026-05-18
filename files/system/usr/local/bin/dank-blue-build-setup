@@ -1,0 +1,114 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+disable_autostart() {
+    if [[ -f "$HOME/.config/autostart/dank-blue-build-setup.desktop" ]]; then
+        echo "Disabling setup autostart..."
+        if mv "$HOME/.config/autostart/dank-blue-build-setup.desktop" "$HOME/.config/autostart/dank-blue-build-setup.desktop.lock"; then
+            echo "Successfully disabled autostart for setup."
+        else
+            echo "Failed to disable autostart for setup." >&2
+            echo "You can manually disable the autostart by removing the file '~/.config/autostart/dank-blue-build-setup.desktop'."
+            echo "The desktop setup will autostart again on next login."
+        fi
+    fi
+
+    sudo touch /var/lib/dank-blue-build/setup.done
+}
+
+autostart_prompt() {
+    echo "Allow this script to automatically run again on next login to retry/complete desktop setup? (Y/n)"
+    read -r response
+    case "$response" in
+        [Yy]* | "" )
+            echo "The desktop setup will autostart again on next login."
+            ;;
+        [Nn]* )
+            disable_autostart
+            ;;
+        * )
+            echo "Invalid response. Please enter y or n."
+            autostart_prompt
+            ;;
+    esac
+
+    echo "You can manually run the setup again by running 'dank-blue-build-setup' with or without sudo."
+}
+
+echo "### DANK BLUE BUILD SETUP ###"
+echo "You can review the contents of this setup in '/usr/local/bin/dank-blue-build-setup' and '/usr/libexec/dank-blue-build/setup.d/' before you proceed."
+
+if [ "$EUID" -ne 0 ]; then
+    echo "This setup requires sudo privileges."
+    echo "Requesting sudo privileges... (Press Ctrl+C to cancel)"
+
+    if sudo -v &> /dev/null; then
+        echo "Sudo privileges granted."
+    else
+        echo "Failed to obtain sudo privileges." >&2
+        autostart_prompt
+        exec bash
+    fi
+else
+    read -r -p "Press Enter to continue or Ctrl+C to cancel."
+fi
+
+while true; do
+    sleep 60
+    sudo -v
+done &
+SUDO_LOOP_PID=$!
+
+exit_script() {
+    kill "$SUDO_LOOP_PID" 2>/dev/null
+    sudo -K
+}
+trap exit_script EXIT
+
+declare -a FAILED_SCRIPTS=()
+
+abort_script() {
+    echo "Setup interrupted." >&2
+    autostart_prompt
+    exit_script
+}
+trap abort_script INT
+
+STATE_PATH="/var/lib/dank-blue-build/setup.d"
+mkdir -p "$STATE_PATH"
+
+SCRIPT_DIR="/usr/libexec/dank-blue-build/setup.d"
+shopt -s extglob nullglob
+SCRIPTS=( "$SCRIPT_DIR"/!(example) )
+
+exec > >(sudo tee -a /var/lib/dank-blue-build/setup.log) 2>&1   
+
+if [ "${#SCRIPTS[@]}" -ne 0 ]; then
+    for script in "${SCRIPTS[@]}"; do
+        [ -f "$STATE_PATH/$(basename "$script").done" ] && continue
+
+        echo "Executing '$script'..."
+        if ! sudo bash "$script"; then
+            FAILED_SCRIPTS+=("$script")
+        else
+            touch "$STATE_PATH/$(basename "$script").done"
+        fi
+    done
+fi
+
+if [ ${#FAILED_SCRIPTS[@]} -ne 0 ]; then
+    echo "The following scripts failed during setup:" >&2
+    for script in "${FAILED_SCRIPTS[@]}"; do
+        echo "  - $script" >&2
+    done
+
+    echo "Please review the errors above. See the log file '/var/lib/dank-blue-build/setup.log'." >&2
+    autostart_prompt
+    exit_script
+else
+    disable_autostart
+    echo "All scripts executed successfully. "
+    echo "Setup completed."
+    exit_script
+fi

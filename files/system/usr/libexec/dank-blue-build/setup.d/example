@@ -1,0 +1,35 @@
+#!/usr/bin/env bash
+
+# set -euo pipefail
+
+# abort_script() {
+#     echo "Script interrupted." >&2
+#     exit 1
+# }
+# trap abort_script INT
+
+# # The main setup script relies on the above to function properly.
+# # You can write whatever you need. Example below:
+
+# failed() {
+#     echo "Failed to execute command." >&2
+#     exit 1
+# }
+
+# # For non-sudo commands
+# if [ "$EUID" -ne 0 ]; then
+#     command || failed
+# else
+#     sudo -u "$SUDO_USER" command || failed 
+# fi
+
+# # For sudo commands
+# if [ "$EUID" -ne 0 ]; then
+#     sudo command || failed
+# else
+#     command || failed 
+# fi
+
+# echo "Successfully executed command."
+# exit 0
+

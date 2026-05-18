@@ -2,7 +2,15 @@
 
 set -euo pipefail
 
+# shellcheck disable=SC2329
+abort_script() {
+    echo "Script interrupted." >&2
+    exit 1
+}
+trap abort_script INT
+
 # Taken from https://danklinux.com/docs/dankgreeter/
+echo
 cat << "EOF"
 ██████╗  █████╗ ███╗   ██╗██╗  ██╗ ██████╗ ██████╗ ███████╗███████╗████████╗
 ██╔══██╗██╔══██╗████╗  ██║██║ ██╔╝██╔════╝ ██╔══██╗██╔════╝██╔════╝╚══██╔══╝
@@ -14,10 +22,17 @@ EOF
 
 echo
 echo "Syncing DankGreeter to user theme..."
-echo
 
-if ! dms greeter sync; then
-    echo "Run 'dms greeter sync' to try again."
+failed() {
+    echo "Failed to sync DankGreeter." >&2
+    exit 1
+}
+
+if [ "$EUID" -ne 0 ]; then
+    dms greeter sync || failed
+else
+    sudo -u "$SUDO_USER" dms greeter sync || failed
 fi
 
-mv "$HOME/.config/autostart/dms-greeter-sync.desktop" "$HOME/.config/autostart/dms-greeter-sync.desktop.lock"
+echo "Successfully synced DankGreeter."
+exit 0

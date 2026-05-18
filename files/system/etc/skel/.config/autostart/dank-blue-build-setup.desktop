@@ -2,7 +2,7 @@
 [Desktop Entry]
 Type=Application
 Name=Setup
-Exec=xdg-terminal-exec -e bash -c "/usr/libexec/dank-blue-build/dms-greeter-sync; exec bash"
+Exec=/usr/libexec/dank-blue-build/auto-setup
 Icon=utilities-terminal
 Terminal=false
 Categories=Utility;

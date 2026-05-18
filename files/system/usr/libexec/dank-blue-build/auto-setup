@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+[ "$EUID" -eq 0 ] && exit 1
+
+if [ -f /var/lib/dank-blue-build/setup.done ]; then
+    mv "$HOME/.config/autostart/dank-blue-build-setup.desktop" "$HOME/.config/autostart/dank-blue-build-setup.desktop.lock"
+    exit 0
+fi
+
+scripts=( /usr/libexec/dank-blue-build/setup.d/* )
+completed_scripts=( /var/lib/dank-blue-build/setup.d/* )
+
+scripts_done=( "${scripts[@]/%/\.done}" )
+if [[ "${scripts_done[*]}" == "${completed_scripts[*]}" ]]; then
+    mv "$HOME/.config/autostart/dank-blue-build-setup.desktop" "$HOME/.config/autostart/dank-blue-build-setup.desktop.lock"
+    exit 0
+fi
+
+xdg-terminal-exec -e bash -c "dank-blue-build-setup; exec bash"

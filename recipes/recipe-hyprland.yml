@@ -37,9 +37,9 @@ modules:
         
   - type: script
     snippets:
-      - "chmod +x /usr/libexec/dank-blue-build/skel-init"
+      - "chmod -R +x /usr/libexec/dank-blue-build"
       - "chmod +x /usr/libexec/hyprland/restart-portals"
-      - "chmod +x /usr/libexec/dank-blue-build/dms-greeter-sync"
+      - "chmod +x /usr/local/bin/dank-blue-build-setup"
 
   - type: systemd
     system:
