@@ -1,0 +1,28 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# shellcheck disable=SC2329
+abort_script() {
+    echo "Script interrupted." >&2
+    exit 1
+}
+trap abort_script INT
+
+# # The main setup script relies on the above to function properly.
+# # You can write whatever you need. Example below:
+
+failed() {
+    echo "Failed to disable default user Flatpak setup." >&2
+    exit 1
+}
+
+if [ "$EUID" -ne 0 ]; then
+    sudo bluebuild-flatpak-manager disable all || failed
+else
+    bluebuild-flatpak-manager disable all || failed 
+fi
+
+echo "Successfully disabled default user Flatpak setup."
+exit 0
+
