@@ -6,8 +6,10 @@ BlueBuild images with Dank Linux. Only Hyprland available for now.
 
 ### Rebase
 
-> [!WARNING] from BlueBuild
+> [!WARNING]
 > [This is an experimental feature](https://www.fedoraproject.org/wiki/Changes/OstreeNativeContainerStable), try at your own discretion.
+
+> I personally have had no problems with rebasing.
 
 To rebase an existing atomic Fedora installation to the latest build of `dank-bluebuild-hyprland`:
 
