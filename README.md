@@ -1,14 +1,33 @@
 # Dank BlueBuild &nbsp; [![bluebuild build badge](https://github.com/quijadah/bluebuild-hyprland-dms-personal/actions/workflows/build.yml/badge.svg)](https://github.com/quijadah/bluebuild-hyprland-dms-personal/actions/workflows/build.yml)
 
-BlueBuild images with Dank Linux. Only Hyprland available for now.
+Not too opinionated [BlueBuild](https://blue-build.org/) image~~s~~ with [Dank Linux](https://danklinux.com/). Only [Hyprland](https://hypr.land/) available for now.
+
+Dank BlueBuild is heavily inspired by [wayblue](https://github.com/wayblueorg/wayblue/) and aims to be pretty much like wayblue if it had Dank Linux. It started off as a personal project that I didn't intend to share publicly, but I later thought that maybe there would be someone who would appreciate a readily-available Fedora Atomic image with Dank Linux, so I grabbed the necessities of Dank Linux and Hyprland, along with other desktop essentials, and put them in this project.
+
+### TO-DO
+- Add a true minimal recipe with just Dank Linux and Hyprland, nothing else.
+- Convert the Hypland config to Lua once Dank Linux supports it.
+- Add Niri and other Wayland compositors someday.
+- Maybe format the DMS keybind cheatsheet.
+
+---
+
+## Customization
+
+It is recommended that you [set up a new repository](https://blue-build.org/how-to/setup/) based on [`blue-build/template`](https://github.com/blue-build/template) and use a Dank BlueBuild image as the base image of your [recipe](https://blue-build.org/reference/recipe/#base-image-required). This is so that you can add your customizations on top of Dank BlueBuild instead of directly configuring it and constantly syncing your recipe with Dank BlueBuild's.
+
+However, you may also use this repository as a template if you'd like to apply your customizations directly and basically make your own BlueBuild project.
+
+---
 
 ## Installation
 
 ### Rebase
 
 > [!WARNING]
-> [This is an experimental feature](https://www.fedoraproject.org/wiki/Changes/OstreeNativeContainerStable), try at your own discretion.
+> BlueBuild: [This is an experimental feature](https://www.fedoraproject.org/wiki/Changes/OstreeNativeContainerStable), try at your own discretion.
 
+> [!NOTE]
 > I personally have had no problems with rebasing.
 
 To rebase an existing atomic Fedora installation to the latest build of `dank-bluebuild-hyprland`:
@@ -127,11 +146,6 @@ This is used to set Ghostty as the "fallback terminal emulator" via [`files/syst
 If you decide to install your preferred terminal emulator, please create `xdg-terminals.list` in `files/system/etc/skel/.config/` or `~/.config/` and write to it the name of your preferred terminal emulator's `.desktop` file.
 
 ---
-
-### TO-DO
-- Convert the Hypland config to Lua once Dank Linux supports it.
-- Maybe format the DMS Keybind Cheatsheet.
-- Might add Niri and other Wayland compositors.
 
 ### Notes
 - The system-level apps (Warehouse and Flatseal) will still be auto-reinstalled since I consider them the "core apps" for Flatpak. You can disable the auto-reinstallation of the system-level Flatpaks by running `bluebuild-flatpak-manager disable system` in the terminal.
