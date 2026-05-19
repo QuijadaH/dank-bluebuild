@@ -8,11 +8,6 @@ base-image: ghcr.io/blue-build/base-images/fedora-base
 image-version: 43
 
 modules:
-  - type: files
-    files:
-      - source: system
-        destination: /
-      
   - from-file: ./common/hyprland-modules.yml
   - from-file: ./common/core-modules.yml
 

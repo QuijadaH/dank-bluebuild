@@ -39,22 +39,20 @@ modules:
         - xdg-user-dirs
         - xdg-utils
         
-  # Core Flatpaks
   - type: default-flatpaks
     configurations:
       - notify: false
         scope: system
         repo:
           title: Flathub (system)
-        install: 
+        install:
+          # Core Flatpaks 
           - com.github.tchx84.Flatseal
           - io.github.flattool.Warehouse
       - notify: false
         scope: user
         repo:
           title: Flathub (user)
-        install:
-          - org.mozilla.firefox
 
   - type: script
     snippets:

@@ -32,4 +32,5 @@ modules:
           - io.github.celluloid_player.Celluloid
           - org.onlyoffice.desktopeditors
           - org.gnome.Loupe
+          - org.mozilla.firefox
           - org.gnome.Papers

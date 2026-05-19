@@ -24,7 +24,7 @@ However, you may also use this repository as a template if you'd like to apply y
 > [!NOTE]
 > I personally have had no problems with rebasing.
 
-To rebase an existing atomic Fedora installation to the latest build of `dank-bluebuild-hyprland`:
+To rebase an existing atomic Fedora installation to the latest build of a Dank BlueBuild image (e.g. `dank-bluebuild-hyprland`):
 
 - First rebase to the unsigned image, to get the proper signing keys and policies installed:
   ```
@@ -48,7 +48,10 @@ The `latest` tag will automatically point to the latest build. That build will s
 ### ISO
 
 > [!IMPORTANT]
-> Make sure you have the [BlueBuild CLI tool](https://github.com/blue-build/cli) installed. On Windows, I installed the tool using [its GitHub install script](https://github.com/blue-build/cli#github-install-script) on a Docker-integrated WSL 2 instance.
+> Make sure you have the [BlueBuild CLI tool](https://github.com/blue-build/cli) installed.
+
+> [!NOTE]
+> On Windows, I installed the BlueBuild CLI tool using [its GitHub install script](https://github.com/blue-build/cli#github-install-script) on a Docker-integrated WSL 2 instance. Maybe you could try this for yourself.
 
 To install `dank-bluebuild-hyprland` from an ISO, you must first run the following command to build an ISO:
 ```
