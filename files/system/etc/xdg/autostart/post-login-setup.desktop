@@ -2,7 +2,7 @@
 [Desktop Entry]
 Type=Application
 Name=Setup
-Exec=/usr/libexec/dank-blue-build/post-login-setup/auto
+Exec=/usr/libexec/dank-bluebuild/post-login-setup/auto
 Icon=utilities-terminal
 Terminal=false
 Categories=Utility;

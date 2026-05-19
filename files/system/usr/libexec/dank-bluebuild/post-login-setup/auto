@@ -4,13 +4,13 @@ set -euo pipefail
 
 [ "$EUID" -eq 0 ] && exit 1
 
-if [ -f /var/lib/dank-blue-build/setup.done ]; then
+if [ -f /var/lib/dank-bluebuild/post-login-setup.done ]; then
     mv "$HOME/.config/autostart/post-login-setup.desktop" "$HOME/.config/autostart/post-login-setup.desktop.lock"
     exit 0
 fi
 
-scripts=( /usr/libexec/dank-blue-build/post-login-setup/script.d/* )
-completed_scripts=( /var/lib/dank-blue-build/post-login-setup/script.d/* )
+scripts=( /usr/libexec/dank-bluebuild/post-login-setup/script.d/* )
+completed_scripts=( /var/lib/dank-bluebuild/post-login-setup/script.d/* )
 
 scripts_done=( "${scripts[@]/%/\.done}" )
 if [[ "${scripts_done[*]}" == "${completed_scripts[*]}" ]]; then
@@ -18,4 +18,4 @@ if [[ "${scripts_done[*]}" == "${completed_scripts[*]}" ]]; then
     exit 0
 fi
 
-xdg-terminal-exec -e bash -c "/usr/libexec/dank-blue-build/post-login-setup/run; exec bash"
+xdg-terminal-exec -e bash -c "/usr/libexec/dank-bluebuild/post-login-setup/run; exec bash"

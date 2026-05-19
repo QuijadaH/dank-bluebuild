@@ -9,15 +9,15 @@ abort_script() {
 }
 trap abort_script INT
 
-echo "Disabling default user Flatpak setup..."
+echo "Disabling default user Flatpak auto-reinstall..."
 
 failed() {
-    echo "Failed to disable default user Flatpak setup." >&2
+    echo "Failed to disable default user Flatpak auto-reinstall." >&2
     exit 1
 }
 
 bluebuild-flatpak-manager disable user || failed
 
-echo "Successfully disabled default user Flatpak setup."
+echo "Successfully disabled default user Flatpak auto-reinstall."
 exit 0
 

@@ -1,7 +1,7 @@
 ---
 # yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
 
-name: dank-blue-build-hyprland
+name: dank-bluebuild-hyprland
 description: BlueBuild image for Dank Linux and Hyprland.
 
 base-image: ghcr.io/blue-build/base-images/fedora-base
@@ -37,7 +37,7 @@ modules:
         
   - type: script
     snippets:
-      - "chmod -R +x /usr/libexec/dank-blue-build"
+      - "chmod -R +x /usr/libexec/dank-bluebuild"
       - "chmod +x /usr/libexec/hyprland/restart-portals"
       - "chmod +x /usr/local/bin/post-login-setup"
 

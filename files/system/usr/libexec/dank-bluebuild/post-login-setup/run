@@ -3,18 +3,19 @@
 set -euo pipefail
 
 disable_autostart() {
-    if [[ -f "$HOME/.config/autostart/post-login-setup.desktop" ]]; then
+    sudo touch /var/lib/dank-bluebuild/post-login-setup.done
+
+    if [[ -f "/etc/xdg/autostart/post-login-setup.desktop" ]]; then
         echo "Disabling setup autostart..."
-        if mv "$HOME/.config/autostart/post-login-setup.desktop" "$HOME/.config/autostart/post-login-setup.desktop.lock"; then
+        if sudo mv "/etc/xdg/autostart/post-login-setup.desktop" "/etc/xdg/autostart/post-login-setup.desktop.lock"; then
             echo "Successfully disabled autostart for setup."
+            return 0
         else
             echo "Failed to disable autostart for setup." >&2
-            echo "You can manually disable the autostart by removing the file '~/.config/autostart/post-login-setup.desktop'."
-            echo "The desktop setup will autostart again on next login."
+            echo "You can manually disable the autostart by locking or removing the file '/etc/xdg/autostart/post-login-setup.desktop'."
+            return 1
         fi
     fi
-
-    sudo touch /var/lib/dank-blue-build/setup.done
 }
 
 autostart_prompt() {
@@ -25,7 +26,7 @@ autostart_prompt() {
             echo "The desktop setup will autostart again on next login."
             ;;
         [Nn]* )
-            disable_autostart
+            disable_autostart || echo "The desktop setup might autostart again on next login."
             ;;
         * )
             echo "Invalid response. Please enter y or n."
@@ -37,7 +38,7 @@ autostart_prompt() {
 }
 
 echo "### DANK BLUE BUILD SETUP ###"
-echo "You can review the contents of this setup in '/usr/local/bin/post-login-setup' and '/usr/libexec/dank-blue-build/setup.d/' before you proceed."
+echo "You can review the contents of this setup in '/usr/local/bin/post-login-setup' and '/usr/libexec/dank-bluebuild/setup.d/' before you proceed."
 
 if [ "$EUID" -ne 0 ]; then
     echo "This setup requires sudo privileges."
@@ -75,14 +76,14 @@ abort_script() {
 }
 trap abort_script INT
 
-STATE_PATH="/var/lib/dank-blue-build/post-login-setup/script.d"
+STATE_PATH="/var/lib/dank-bluebuild/post-login-setup/script.d"
 mkdir -p "$STATE_PATH"
 
-SCRIPT_DIR="/usr/libexec/dank-blue-build/post-login-setup/script.d"
+SCRIPT_DIR="/usr/libexec/dank-bluebuild/post-login-setup/script.d"
 shopt -s extglob nullglob
 SCRIPTS=( "$SCRIPT_DIR"/!(example) )
 
-exec > >(sudo tee -a /var/lib/dank-blue-build/post-login-setup/log) 2>&1   
+exec > >(sudo tee -a /var/lib/dank-bluebuild/post-login-setup/log) 2>&1   
 
 if [ "${#SCRIPTS[@]}" -ne 0 ]; then
     for script in "${SCRIPTS[@]}"; do
@@ -106,7 +107,7 @@ if [ ${#FAILED_SCRIPTS[@]} -ne 0 ]; then
         echo "  - $script" >&2
     done
 
-    echo "Please review the errors above. See the log file '/var/lib/dank-blue-build/setup.log'." >&2
+    echo "Please review the errors above. See the log file '/var/lib/dank-bluebuild/post-login-setup/log'." >&2
     autostart_prompt
     exit_script
 else
