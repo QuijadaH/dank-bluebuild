@@ -1,8 +1,8 @@
 ---
 # yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
 
-name: dank-bluebuild-hyprland
-description: BlueBuild image for Dank Linux and Hyprland.
+name: dank-bluebuild-hyprland-minimal
+description: Minimal BlueBuild image for Dank Linux and Hyprland.
 
 base-image: ghcr.io/blue-build/base-images/fedora-base
 image-version: 43
@@ -12,49 +12,8 @@ modules:
     files:
       - source: system
         destination: /
-
-  # Hyprland packages
-  - type: dnf
-    repos:
-      copr:
-        enable:
-          - lionheartp/Hyprland
-    install:
-      install-weak-deps: false
-      packages:
-      - hyprland
-      - hyprland-guiutils
-      - grim
-      - qt5-qtwayland
-      - qt6-qtwayland
-      - slurp
-      - wev
-      - xdg-desktop-portal-hyprland
-      - xwaylandvideobridge    # See https://wiki.hypr.land/Useful-Utilities/Screen-Sharing/#xwayland
-
-  # Hyprpm dependencies
-  - type: dnf
-    install:
-      packages:
-      - cmake
-      - gcc-c++
-      - libglvnd-devel
-      - libglvnd-gles
-      - mesa-libGL-devel
-      - pkgconf-pkg-config
-      - udis86
-      - udis86-devel
       
+  - from-file: ./common/hyprland-modules.yml
   - from-file: ./common/core-modules.yml
-  - from-file: ./common/common-modules.yml
-
-  - type: script
-    snippets:
-      - "chmod +x /usr/libexec/hyprland/restart-portals"
-
-  - type: systemd
-    user:
-      enabled:
-        - hyprland-session.target
 
   - type: signing

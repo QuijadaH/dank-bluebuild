@@ -1,0 +1,47 @@
+modules:
+  # Hyprland files
+  - type: files
+    files:
+      - source: hyprland
+        destination: /
+
+  # Hyprland packages
+  - type: dnf
+    repos:
+      copr:
+        enable:
+          - lionheartp/Hyprland
+    install:
+      install-weak-deps: false
+      packages:
+      - hyprland
+      - hyprland-guiutils
+      - grim
+      - qt5-qtwayland
+      - qt6-qtwayland
+      - slurp
+      - wev
+      - xdg-desktop-portal-hyprland
+      - xwaylandvideobridge    # See https://wiki.hypr.land/Useful-Utilities/Screen-Sharing/#xwayland
+
+  # Hyprpm dependencies
+  - type: dnf
+    install:
+      packages:
+      - cmake
+      - gcc-c++
+      - libglvnd-devel
+      - libglvnd-gles
+      - mesa-libGL-devel
+      - pkgconf-pkg-config
+      - udis86
+      - udis86-devel
+      
+  - type: script
+    snippets:
+      - "chmod +x /usr/libexec/hyprland/restart-portals"
+
+  - type: systemd
+    user:
+      enabled:
+        - hyprland-session.target

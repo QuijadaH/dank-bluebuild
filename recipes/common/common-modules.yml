@@ -27,10 +27,7 @@ modules:
         
   - type: default-flatpaks
     configurations:
-      - notify: false
-        scope: user
-        repo:
-          title: Flathub (user)
+      - scope: user
         install:
           - io.github.celluloid_player.Celluloid
           - org.onlyoffice.desktopeditors
