@@ -1,0 +1,22 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+VERSION="v1"
+
+[ -e "/var/lib/dank-blue-build/skel-init/$VERSION-done" ] && exit 0
+
+SKEL="/etc/skel"
+
+awk -F: '$3 >= 1000 && $3 < 65534 { print $1 ":" $6 }' /etc/passwd |
+while IFS=: read -r user home; do
+    [[ -d "$home" ]] || continue
+    [[ -f "$home/.local/state/dank-blue-build/skel-init/$VERSION-done" ]] && continue
+
+    rsync --backup --suffix=.skel-init-"$VERSION".bak "$SKEL"/ "$home"/
+    chown -R "$user:$user" "$home"
+    chmod -R 700 "$home"
+done
+
+mkdir -p /var/lib/dank-blue-build/skel-init
+touch /var/lib/dank-blue-build/skel-init/$VERSION-done

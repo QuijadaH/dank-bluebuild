@@ -9,19 +9,14 @@ abort_script() {
 }
 trap abort_script INT
 
-# # The main setup script relies on the above to function properly.
-# # You can write whatever you need. Example below:
+echo "Disabling default user Flatpak setup..."
 
 failed() {
     echo "Failed to disable default user Flatpak setup." >&2
     exit 1
 }
 
-if [ "$EUID" -ne 0 ]; then
-    sudo bluebuild-flatpak-manager disable all || failed
-else
-    bluebuild-flatpak-manager disable all || failed 
-fi
+bluebuild-flatpak-manager disable user || failed
 
 echo "Successfully disabled default user Flatpak setup."
 exit 0

@@ -39,7 +39,7 @@ modules:
     snippets:
       - "chmod -R +x /usr/libexec/dank-blue-build"
       - "chmod +x /usr/libexec/hyprland/restart-portals"
-      - "chmod +x /usr/local/bin/dank-blue-build-setup"
+      - "chmod +x /usr/local/bin/post-login-setup"
 
   - type: systemd
     system:

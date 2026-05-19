@@ -1,4 +1,5 @@
 # See https://wiki.hypr.land/0.54.0/FAQ/#some-of-my-apps-take-a-really-long-time-to-open
+
 [Unit]
 Description=Restart portals for Hyprland
 Before=hyprland-session.target

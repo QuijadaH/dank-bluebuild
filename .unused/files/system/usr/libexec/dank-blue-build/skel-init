@@ -1,90 +1,50 @@
 #!/usr/bin/env bash
+
 set -euo pipefail
 
-IMAGE_FILE="/usr/lib/dank-blue-build/image"
+VERSION="v1"
 
-if [[ ! -f "$IMAGE_FILE" ]]; then
-    exit 0
-fi
-
-IMAGE_ID="$(tr -d '[:space:]' < "$IMAGE_FILE")"
-
-if ! bootc status | grep -Fq "$IMAGE_ID"; then
-    exit 0
-fi
+[ -e "/var/lib/dank-blue-build/skel-init/$VERSION-done" ] && exit 0
 
 SKEL="/etc/skel"
-STAMP="/var/lib/dank-blue-build/skel-init-done"
-IGNORE_FILE="$SKEL/.skel-ignore"
 
-# -------------------------
-# Load skip list
-# -------------------------
-declare -a SKIP_LIST=()
-
-if [[ -f "$IGNORE_FILE" ]]; then
-    while IFS= read -r line; do
-        line="$(echo "$line" | xargs)"
-
-        # skip empty lines and comments
-        [[ -z "$line" || "$line" == \#* ]] && continue
-
-        SKIP_LIST+=("$line")
-    done < "$IGNORE_FILE"
-fi
-
-# -------------------------
-# Skip matching function
-# -------------------------
-should_skip() {
-    local rel="$1"
-
-    for pattern in "${SKIP_LIST[@]}"; do
-        if [[ "$rel" == "$pattern" || "$rel" == "$pattern/"* ]]; then
-            return 0
-        fi
-    done
-
-    return 1
-}
-
-# -------------------------
-# Iterate users
-# -------------------------
+# iterate users
 awk -F: '$3 >= 1000 && $3 < 65534 { print $1 ":" $6 }' /etc/passwd |
 while IFS=: read -r user home; do
     [[ -d "$home" ]] || continue
 
-    # already initialized → skip user entirely
-    if [[ -f "$STAMP" ]]; then
+    # already initialized -> skip user entirely
+    if [[ -f "$home/.local/state/dank-blue-build/skel-init/$VERSION-done" ]]; then
         continue
     fi
 
     echo "Bootc skel init: $user"
 
-    # copy top-level skel entries
-    find "$SKEL" -mindepth 1 -maxdepth 1 -print0 |
+    # walk every skel entry recursively
+    find "$SKEL" -mindepth 1 -print0 |
     while IFS= read -r -d '' src; do
-        rel="${src#$SKEL/}"
+        rel="${src#"$SKEL"/}"
         dst="$home/$rel"
 
-        # skip via declarative list
-        if should_skip "$rel"; then
+        # create directories only
+        if [[ -d "$src" ]]; then
+            mkdir -p "$dst"
+            chown "$user:$user" "$dst"
             continue
         fi
 
-        # backup if exists
-        if [[ -e "$dst" ]]; then
-            ts=$(date +"%Y%m%d-%H%M%S")
-            mv "$dst" "${dst}.bak.${ts}"
+        # backup only the leaf being replaced
+        if [[ -e "$dst" || -L "$dst" ]]; then
+            backup="$dst.skel-init-$VERSION.bak"
+            mv "$dst" "$backup"
         fi
 
         mkdir -p "$(dirname "$dst")"
-        cp -a "$src" "$dst"
-        chown -R "$user:$user" "$dst"
-    done
 
-    # create stamp file to indicate initialization done
-    mkdir -p "$(dirname "$STAMP")"
-    touch "$STAMP"
+        cp -a "$src" "$dst"
+        chown -h "$user:$user" "$dst"
+    done
 done
+
+mkdir -p /var/lib/dank-blue-build/skel-init
+touch /var/lib/dank-blue-build/skel-init/$VERSION-done

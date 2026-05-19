@@ -3,13 +3,13 @@
 set -euo pipefail
 
 disable_autostart() {
-    if [[ -f "$HOME/.config/autostart/dank-blue-build-setup.desktop" ]]; then
+    if [[ -f "$HOME/.config/autostart/post-login-setup.desktop" ]]; then
         echo "Disabling setup autostart..."
-        if mv "$HOME/.config/autostart/dank-blue-build-setup.desktop" "$HOME/.config/autostart/dank-blue-build-setup.desktop.lock"; then
+        if mv "$HOME/.config/autostart/post-login-setup.desktop" "$HOME/.config/autostart/post-login-setup.desktop.lock"; then
             echo "Successfully disabled autostart for setup."
         else
             echo "Failed to disable autostart for setup." >&2
-            echo "You can manually disable the autostart by removing the file '~/.config/autostart/dank-blue-build-setup.desktop'."
+            echo "You can manually disable the autostart by removing the file '~/.config/autostart/post-login-setup.desktop'."
             echo "The desktop setup will autostart again on next login."
         fi
     fi
@@ -33,11 +33,11 @@ autostart_prompt() {
             ;;
     esac
 
-    echo "You can manually run the setup again by running 'dank-blue-build-setup' with or without sudo."
+    echo "You can manually run the setup again by running 'post-login-setup' with or without sudo."
 }
 
 echo "### DANK BLUE BUILD SETUP ###"
-echo "You can review the contents of this setup in '/usr/local/bin/dank-blue-build-setup' and '/usr/libexec/dank-blue-build/setup.d/' before you proceed."
+echo "You can review the contents of this setup in '/usr/local/bin/post-login-setup' and '/usr/libexec/dank-blue-build/setup.d/' before you proceed."
 
 if [ "$EUID" -ne 0 ]; then
     echo "This setup requires sudo privileges."
@@ -75,18 +75,21 @@ abort_script() {
 }
 trap abort_script INT
 
-STATE_PATH="/var/lib/dank-blue-build/setup.d"
+STATE_PATH="/var/lib/dank-blue-build/post-login-setup/script.d"
 mkdir -p "$STATE_PATH"
 
-SCRIPT_DIR="/usr/libexec/dank-blue-build/setup.d"
+SCRIPT_DIR="/usr/libexec/dank-blue-build/post-login-setup/script.d"
 shopt -s extglob nullglob
 SCRIPTS=( "$SCRIPT_DIR"/!(example) )
 
-exec > >(sudo tee -a /var/lib/dank-blue-build/setup.log) 2>&1   
+exec > >(sudo tee -a /var/lib/dank-blue-build/post-login-setup/log) 2>&1   
 
 if [ "${#SCRIPTS[@]}" -ne 0 ]; then
     for script in "${SCRIPTS[@]}"; do
-        [ -f "$STATE_PATH/$(basename "$script").done" ] && continue
+        if [ -f "$STATE_PATH/$(basename "$script").done" ]; then
+            echo "Script '$script' already completed. Skipping..."
+            continue
+        fi
 
         echo "Executing '$script'..."
         if ! sudo bash "$script"; then

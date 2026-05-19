@@ -1,0 +1,26 @@
+#!/usr/bin/env bash
+
+set -euo pipefail
+
+# shellcheck disable=SC2329
+abort_script() {
+    echo "Script interrupted." >&2
+    exit 1
+}
+trap abort_script INT
+
+echo "Disabling skel-init.service..."
+
+failed() {
+    echo "Failed to disable skel-init.service." >&2
+    exit 1
+}
+
+if [ "$EUID" -ne 0 ]; then
+    sudo systemctl disable skel-init.service || failed
+else
+    systemctl disable skel-init.service || failed 
+fi
+
+echo "Successfully disabled skel-init.service."
+exit 0

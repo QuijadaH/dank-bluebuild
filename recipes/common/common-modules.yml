@@ -42,7 +42,6 @@ modules:
           title: Flathub (system)
         install: 
           - com.github.tchx84.Flatseal
-          - org.fedoraproject.MediaWriter
           - io.github.flattool.Warehouse
       - notify: false
         scope: user
