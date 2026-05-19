@@ -1,0 +1,69 @@
+modules:
+  # Dank Linux packages
+  - type: dnf
+    repos:
+      copr:
+        enable:
+            - avengemedia/dms
+            - scottames/ghostty
+    install:
+      packages:
+        - dms
+        - dms-greeter    
+        - acl
+        - adw-gtk3-theme
+        - cliphist
+        - ddcutil
+        - ghostty
+        - i2c-tools
+        - power-profiles-daemon    
+        - wl-clipboard
+
+  # Other core packages
+  - type: dnf
+    install:
+      packages:
+        - glib2
+        - gnome-keyring
+        - gnome-keyring-pam
+        - libsecret
+        - shared-mime-info
+        - udisks2
+        - xdg-terminal-exec
+        - xdg-user-dirs
+        - xdg-utils
+        
+  # Core Flatpaks
+  - type: default-flatpaks
+    configurations:
+      - notify: false
+        scope: system
+        repo:
+          title: Flathub (system)
+        install: 
+          - com.github.tchx84.Flatseal
+          - io.github.flattool.Warehouse
+      - notify: false
+        scope: user
+        repo:
+          title: Flathub (user)
+        install:
+          - org.mozilla.firefox
+
+  - type: script
+    snippets:
+      - "chmod -R +x /usr/libexec/dank-bluebuild"
+      - "chmod +x /usr/local/bin/post-login-setup"
+
+  - type: systemd
+    system:
+      enabled:
+        - greetd
+        - skel-init.service
+    user:
+      enabled:
+        - gnome-keyring-daemon.socket
+        - dms
+        - dsearch
+      disabled:
+        - flatpak-user-update.timer

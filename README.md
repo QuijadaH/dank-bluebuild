@@ -4,12 +4,6 @@ Not too opinionated [BlueBuild](https://blue-build.org/) image~~s~~ with [Dank L
 
 Dank BlueBuild is heavily inspired by [wayblue](https://github.com/wayblueorg/wayblue/) and aims to be pretty much like wayblue if it had Dank Linux. It started off as a personal project that I didn't intend to share publicly, but I later thought that maybe there would be someone who would appreciate a readily-available Fedora Atomic image with Dank Linux, so I grabbed the necessities of Dank Linux and Hyprland, along with other desktop essentials, and put them in this project.
 
-### TO-DO
-- Add a true minimal recipe with just Dank Linux and Hyprland, nothing else.
-- Convert the Hypland config to Lua once Dank Linux supports it.
-- Add Niri and other Wayland compositors someday.
-- Maybe format the DMS keybind cheatsheet.
-
 ---
 
 ## Customization
@@ -53,8 +47,7 @@ The `latest` tag will automatically point to the latest build. That build will s
 
 ### ISO
 
-> I will provide pre-built ISOs soon via SourceForge.
-
+> [!IMPORTANT]
 > Make sure you have the [BlueBuild CLI tool](https://github.com/blue-build/cli) installed. On Windows, I installed the tool using [its GitHub install script](https://github.com/blue-build/cli#github-install-script) on a Docker-integrated WSL 2 instance.
 
 To install `dank-bluebuild-hyprland` from an ISO, you must first run the following command to build an ISO:
@@ -150,3 +143,9 @@ If you decide to install your preferred terminal emulator, please create `xdg-te
 ### Notes
 - The system-level apps (Warehouse and Flatseal) will still be auto-reinstalled since I consider them the "core apps" for Flatpak. You can disable the auto-reinstallation of the system-level Flatpaks by running `bluebuild-flatpak-manager disable system` in the terminal.
 - Check out [my personal BlueBuild image](https://github.com/QuijadaH/dank-bluebuild-personal) for inspiration or a demonstration.
+
+### TO-DO
+- Provide pre-built ISOs soon via SourceForge.
+- Convert the Hypland config to Lua once Dank Linux supports it.
+- Add Niri and other Wayland compositors someday.
+- Maybe format the DMS keybind cheatsheet.

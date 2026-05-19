@@ -7,13 +7,9 @@ modules:
         - fastfetch
         - file-roller
         - firewall-config
-        - glib2
-        - gnome-keyring
-        - gnome-keyring-pam
         - gparted
         - gvfs
         - libgsf 
-        - libsecret
         - mediainfo
         - nemo
         - nemo-extensions
@@ -24,25 +20,13 @@ modules:
         - poppler-glib
         - samba-client
         - seahorse
-        - shared-mime-info
         - trash-cli 
         - tumbler
-        - udisks2
         - unrar
         - webp-pixbuf-loader
-        - xdg-terminal-exec
-        - xdg-user-dirs
-        - xdg-utils
         
   - type: default-flatpaks
     configurations:
-      - notify: false
-        scope: system
-        repo:
-          title: Flathub (system)
-        install: 
-          - com.github.tchx84.Flatseal
-          - io.github.flattool.Warehouse
       - notify: false
         scope: user
         repo:
@@ -50,6 +34,5 @@ modules:
         install:
           - io.github.celluloid_player.Celluloid
           - org.onlyoffice.desktopeditors
-          - org.mozilla.firefox
           - org.gnome.Loupe
           - org.gnome.Papers
