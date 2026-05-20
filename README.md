@@ -4,7 +4,10 @@ Not too opinionated [BlueBuild](https://blue-build.org/) image~~s~~ with [Dank L
 
 Dank BlueBuild is heavily inspired by [wayblue](https://github.com/wayblueorg/wayblue/) and aims to be pretty much like wayblue if it had Dank Linux. It started off as a personal project that I didn't intend to share publicly, but I later thought that maybe there would be someone who would appreciate a readily-available Fedora Atomic image with Dank Linux.
 
----
+> ### TO-DO
+> - Provide pre-built ISOs soon via SourceForge.
+> - Convert the Hypland config to Lua once Dank Linux supports it.
+> - Add Niri and other Wayland compositors someday.
 
 ## Features
 
@@ -29,8 +32,6 @@ The setup scripts in this project do the following:
 - [Disabling `skel-init.service` after it runs once](files/system/usr/libexec/dank-bluebuild/post-login-setup/script.d/disable-skel-init), which makes sure that `skel-init.service` won't accidentally interfere with your home directory.
 - [Syncing DankGreeter](files/system/usr/libexec/dank-bluebuild/post-login-setup/script.d/sync-dankgreeter) to the user theme for a more consistent aesthetic.
 
----
-
 ## Installation
 
 ### Available Images
@@ -42,7 +43,7 @@ The setup scripts in this project do the following:
 > Non-minimal images also include [`common-modules.yml`](recipes/common/common-modules.yml), which adds a bunch of GUI apps and useful utilities for an OOTB experience. 
 
 | Image | Recipe |
-|---|
+|---|---|
 | `dank-bluebuild-hyprland`| [`recipe-hyprland.yml`](recipes/recipe-hyprland.yml) |
 | `dank-bluebuild-hyprland-minimal`| [`recipe-hyprland-minimal.yml`](recipes/recipe-hyprland-minimal.yml) |
 
