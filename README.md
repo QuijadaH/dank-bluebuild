@@ -6,28 +6,45 @@ Dank BlueBuild is heavily inspired by [wayblue](https://github.com/wayblueorg/wa
 
 ---
 
-## Images
+## Features
 
-All images include the following:
-- Dank Linux
-- [Flatseal](https://github.com/flattool/warehouse)
-- [Ghostty](https://ghostty.org/)
-- [GNOME Keyring](https://gitlab.gnome.org/GNOME/gnome-keyring)
-- [Warehouse](https://github.com/flattool/warehouse)
-- [`xdg-terminal-exec`](https://github.com/Vladimir-csp/xdg-terminal-exec)
-- [`xdg-user-dirs`](https://www.freedesktop.org/wiki/Software/xdg-user-dirs/)
-- [`xdg-utils`](https://www.freedesktop.org/wiki/Software/xdg-utils/)
-- [Dank BlueBuild features](#features)
+### `skel-init.service` ([To file](files/systemd/system/skel-init.service))
 
-### `dank-bluebuild-hyprland`
+> I added this because I thought it would be a hassle to create and configure the needed dotfiles after rebasing. Although BlueBuild has a [`chezmoi` module](https://blue-build.org/reference/modules/chezmoi/), I thought using it just to initialize some default configurations was overkill.
 
+This will initialize Dank Linux's defaults and the autostart of `post-login-setup` for existing users so there won't be too much post-rebase tinkering. Existing and matching config files will be backed up to the same directories for easy recovery.
 
+For a new user from a fresh install or that was manually added, the nature of `/etc/skel` will automatically initialize the contents of their home directory.
 
-### `dank-bluebuild-hyprland-minimal`
+### `post-login-setup` ([To file](files/system/usr/libexec/dank-bluebuild/post-login-setup/run))
+
+> I mainly added this to act as some sort of framework for the various things I usually do after a fresh install. See the add-on setup scripts on my personal image.
+
+This will [automatically](files/system/etc/xdg/autostart/post-login-setup.desktop) run a bunch of [setup scripts](/files/system/usr/libexec/dank-bluebuild/post-login-setup/script.d/) for you after logging in.
+
+The setup scripts in this project do the following:
+- [Disabling the auto-reinstallation of default user Flatpaks](files/system/usr/libexec/dank-bluebuild/post-login-setup/script.d/disable-default-user-flatpak-auto-reinstall), which allows you to uninstall the pre-installed user Flatpaks.
+    > [!NOTE]
+    > The system-level apps (Warehouse and Flatseal) will still be auto-reinstalled since I consider them the "core apps" for Flatpak. You can disable the auto-reinstallation of the system-level Flatpaks by running `bluebuild-flatpak-manager disable system` in the terminal.
+- [Disabling `skel-init.service` after it runs once](files/system/usr/libexec/dank-bluebuild/post-login-setup/script.d/disable-skel-init), which makes sure that `skel-init.service` won't accidentally interfere with your home directory.
+- [Syncing DankGreeter](files/system/usr/libexec/dank-bluebuild/post-login-setup/script.d/sync-dankgreeter) to the user theme for a more consistent aesthetic.
 
 ---
 
 ## Installation
+
+### Available Images
+
+> All images include [`core-modules.yml`](recipes/common/core-modules.yml), which adds Dank Linux, the [Dank BlueBuild features](#features), and other core software and functions.
+>
+> Window manager-specific images include the module for their respective WM alongside the core module.
+>
+> Non-minimal images also include [`common-modules.yml`](recipes/common/common-modules.yml), which adds a bunch of GUI apps and useful utilities for an OOTB experience. 
+
+| Image | Recipe |
+|---|
+| `dank-bluebuild-hyprland`| [`recipe-hyprland.yml`](recipes/recipe-hyprland.yml) |
+| `dank-bluebuild-hyprland-minimal`| [`recipe-hyprland-minimal.yml`](recipes/recipe-hyprland-minimal.yml) |
 
 ### Rebase
 
@@ -79,11 +96,11 @@ These images are signed with [Sigstore](https://www.sigstore.dev/)'s [cosign](ht
 cosign verify --key cosign.pub ghcr.io/quijadah/dank-bluebuild-hyprland
 ```
 
----
-
 ## Customization
 
 It is recommended that you [set up a new repository](https://blue-build.org/how-to/setup/) based on [`blue-build/template`](https://github.com/blue-build/template) and use a Dank BlueBuild image as the base image of your [recipe](https://blue-build.org/reference/recipe/#base-image-required). This is so you can add your customizations on top of Dank BlueBuild instead of directly configuring it, such that you only need to maintain your own customizations and not constantly update your recipe to sync with Dank BlueBuild's.
+
+ > Check out [my personal BlueBuild image](https://github.com/QuijadaH/dank-bluebuild-personal) to see how I built my own customized image on top of Dank BlueBuild.
 
 ### About Terminal Emulators
 
@@ -93,9 +110,9 @@ To set a default terminal emulator, please create `xdg-terminals.list` in `files
 
 If you really want to get rid of Ghostty, then make sure to edit [`files/system/usr/share/xdg-terminal-exec/xdg-terminals.list`](/files/system/usr/share/xdg-terminal-exec/xdg-terminals.list) accordingly.
 
-### Add-on scripts for `post-login-setup`
+### Add-on setup scripts for `post-login-setup`
 
-You can add your own scripts in `files/system/usr/libexec/dank-bluebuild/post-login-setup/script.d` for your own convenience post-install or post-rebase.
+You can add your own setup scripts in `files/system/usr/libexec/dank-bluebuild/post-login-setup/script.d` for your own convenience post-install or post-rebase.
 
 <details>
     <summary>Example `post-login-setup` add-on script</summary>
@@ -138,38 +155,3 @@ You can add your own scripts in `files/system/usr/libexec/dank-bluebuild/post-lo
     ```
 
 </details>
-
-- Check out [my personal BlueBuild image](https://github.com/QuijadaH/dank-bluebuild-personal) for inspiration or a demonstration.
-
----
-
-## Features
-
-### `skel-init.service` ([To file](files/systemd/system/skel-init.service))
-
-> I added this because I thought it would be a hassle to create and configure the needed dotfiles after rebasing. Although BlueBuild has a `chezmoi` module, I thought using it just to initialize some default configurations was unnecessary.
-
-This will initialize Dank Linux's defaults and the autostart of `post-login-setup` for existing users so there won't be too much post-rebase tinkering. Existing and matching config files will be backed up to the same directories for easy recovery.
-
-For a new user from a fresh install or that was manually added, the nature of `/etc/skel` will automatically initialize the contents of their home directory.
-
-### `post-login-setup` ([To file](files/system/usr/libexec/dank-bluebuild/post-login-setup/run))
-
-> I mainly added this to act as some sort of framework for the various things I usually do after a fresh install.
-
-This will [automatically run](files/system/etc/xdg/autostart/post-login-setup.desktop) a bunch of [setup scripts](/files/system/usr/libexec/dank-bluebuild/post-login-setup/script.d/) for you after logging in.
-
-The setup scripts do the following:
-- Disabling the auto-reinstallation of default user Flatpaks, which allows you to uninstall the pre-installed user Flatpaks.
-    > [!NOTE]
-    > The system-level apps (Warehouse and Flatseal) will still be auto-reinstalled since I consider them the "core apps" for Flatpak. You can disable the auto-reinstallation of the system-level Flatpaks by running `bluebuild-flatpak-manager disable system` in the terminal.
-- Disabling `skel-init.service` after it runs once, which makes sure that `skel-init.service` won't accidentally interfere with your home directory.
-- Sync DankGreeter to the user theme for a more consistent aesthetic.
-
----
-
-## TO-DO
-- Provide pre-built ISOs soon via SourceForge.
-- Convert the Hypland config to Lua once Dank Linux supports it.
-- Add Niri and other Wayland compositors someday.
-- Maybe format the DMS keybind cheatsheet.
