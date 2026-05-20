@@ -107,13 +107,13 @@ It is recommended that you [set up a new repository](https://blue-build.org/how-
 
 `xdg-terminal-exec` is used to set Ghostty as the "fallback terminal emulator" via , so I recommend not removing Ghostty from your recipe. Instead, add your preferred terminal emulator to your recipe and set it as the default.
 
-To set a default terminal emulator, please create `xdg-terminals.list` in `files/system/etc/skel/.config/` or `~/.config/` and write to it the name of your preferred terminal emulator's `.desktop` file.
+To set a default terminal emulator, please create `xdg-terminals.list` in [`files/system/etc/skel/.config/`](files/system/etc/skel/.config) or `~/.config/` and write to it the name of your preferred terminal emulator's `.desktop` file.
 
-If you really want to get rid of Ghostty, then make sure to edit [`files/system/usr/share/xdg-terminal-exec/xdg-terminals.list`](/files/system/usr/share/xdg-terminal-exec/xdg-terminals.list) accordingly.
+If you really want to get rid of Ghostty, then make sure to edit [`files/system/usr/share/xdg-terminal-exec/xdg-terminals.list`](files/system/usr/share/xdg-terminal-exec/xdg-terminals.list) accordingly.
 
 ### Add-on setup scripts for `post-login-setup`
 
-You can add your own setup scripts in `files/system/usr/libexec/dank-bluebuild/post-login-setup/script.d` for your own convenience post-install or post-rebase.
+You can add your own setup scripts in [`files/system/usr/libexec/dank-bluebuild/post-login-setup/script.d/`](files/system/usr/libexec/dank-bluebuild/post-login-setup/script.d/) for your own convenience post-install or post-rebase.
 
 <details>
     <summary>Example `post-login-setup` add-on script</summary>
