@@ -9,11 +9,11 @@ Dank BlueBuild is heavily inspired by [wayblue](https://github.com/wayblueorg/wa
 > - Convert the Hypland config to Lua once Dank Linux supports it.
 > - Add Niri and other Wayland compositors someday.
 
-## Features
+## Quality of Life Features
 
 ### `skel-init.service` ([To file](files/systemd/system/skel-init.service))
 
-> I added this because I thought it would be a hassle to create and configure the needed dotfiles after rebasing. Although BlueBuild has a [`chezmoi` module](https://blue-build.org/reference/modules/chezmoi/), I thought using it just to initialize some default configurations was overkill.
+> I added this because I thought it would be a hassle to manually create and edit the needed dotfiles after rebasing. The Although BlueBuild has a [`chezmoi` module](https://blue-build.org/reference/modules/chezmoi/), I thought using it just to initialize some default configurations was overkill.
 
 This will initialize Dank Linux's defaults and the autostart of `post-login-setup` for existing users so there won't be too much post-rebase tinkering. Existing and matching config files will be backed up to the same directories for easy recovery.
 
@@ -21,7 +21,7 @@ For a new user from a fresh install or that was manually added, the nature of `/
 
 ### `post-login-setup` ([To file](files/system/usr/libexec/dank-bluebuild/post-login-setup/run))
 
-> I mainly added this to act as some sort of framework for the various things I usually do after a fresh install. See the add-on setup scripts on my personal image.
+> I added this to act as some sort of framework for the various things I usually do after a fresh install. ~~See the add-on setup scripts on my personal image.~~
 
 This will [automatically](files/system/etc/xdg/autostart/post-login-setup.desktop) run a bunch of [setup scripts](/files/system/usr/libexec/dank-bluebuild/post-login-setup/script.d/) for you after logging in.
 
@@ -157,3 +157,10 @@ You can add your own setup scripts in [`files/system/usr/libexec/dank-bluebuild/
     ```
 
 </details>
+
+### Disable QoL Features
+
+
+
+### Hyprland User Overrides Index
+
