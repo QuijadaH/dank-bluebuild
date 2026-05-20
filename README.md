@@ -27,12 +27,11 @@ This will [automatically](files/system/etc/xdg/autostart/post-login-setup.deskto
 
 The setup scripts in this project do the following:
 - [Disabling the auto-reinstallation of default user Flatpaks](files/system/usr/libexec/dank-bluebuild/post-login-setup/script.d/disable-default-user-flatpak-auto-reinstall), which allows you to uninstall the pre-installed user Flatpaks.
-
-    > [!NOTE]
-    > The system-level apps (Warehouse and Flatseal) will still be auto-reinstalled since I consider them the "core apps" for Flatpak. You can disable the auto-reinstallation of the system-level Flatpaks by running `bluebuild-flatpak-manager disable system` in the terminal.
-    
 - [Disabling `skel-init.service` after it runs once](files/system/usr/libexec/dank-bluebuild/post-login-setup/script.d/disable-skel-init), which makes sure that `skel-init.service` won't accidentally interfere with your home directory.
 - [Syncing DankGreeter](files/system/usr/libexec/dank-bluebuild/post-login-setup/script.d/sync-dankgreeter) to the user theme for a more consistent aesthetic.
+
+> [!NOTE]
+> The system-level apps (Warehouse and Flatseal) will still be auto-reinstalled since I consider them the "core apps" for Flatpak. You can disable the auto-reinstallation of the system-level Flatpaks by running `bluebuild-flatpak-manager disable system` in the terminal.
 
 ## Installation
 
