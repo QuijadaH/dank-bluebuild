@@ -42,7 +42,7 @@ autostart_prompt() {
 }
 
 echo "### DANK BLUE BUILD SETUP ###"
-echo "You can review the contents of this setup in '/usr/local/bin/post-login-setup' and '/usr/libexec/dank-bluebuild/setup.d/' before you proceed."
+echo "You can review the contents of this setup in '/usr/libexec/dank-bluebuild/post-login-setup/' before you proceed."
 
 if [ "$EUID" -ne 0 ]; then
     echo "This setup requires sudo privileges."
@@ -67,6 +67,7 @@ sudo_keepalive() {
 sudo_keepalive &
 SUDO_LOOP_PID=$!
 
+# shellcheck disable=SC2329
 cleanup() {
     kill "$SUDO_LOOP_PID" 2>/dev/null || true
     sudo -K || true
@@ -75,6 +76,7 @@ trap cleanup EXIT
 
 declare -a FAILED_SCRIPTS=()
 
+# shellcheck disable=SC2329
 on_interrupt() {
     trap - INT TERM
 
@@ -97,6 +99,8 @@ exec > >(sudo tee -a "$LOG_FILE") 2>&1 || echo "Failed to initialize logging." >
 
 if [ "${#SCRIPTS[@]}" -ne 0 ]; then
     for script in "${SCRIPTS[@]}"; do
+        [[ -f "$script" && -x "$script" ]] || continue
+
         if [ -f "$STATE_PATH/$(basename "$script").done" ]; then
             echo "Script '$script' already completed. Skipping..."
             continue

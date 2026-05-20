@@ -2,15 +2,28 @@
 
 Not too opinionated [BlueBuild](https://blue-build.org/) image~~s~~ with [Dank Linux](https://danklinux.com/). Only [Hyprland](https://hypr.land/) available for now.
 
-Dank BlueBuild is heavily inspired by [wayblue](https://github.com/wayblueorg/wayblue/) and aims to be pretty much like wayblue if it had Dank Linux. It started off as a personal project that I didn't intend to share publicly, but I later thought that maybe there would be someone who would appreciate a readily-available Fedora Atomic image with Dank Linux, so I grabbed the necessities of Dank Linux and Hyprland, along with other desktop essentials, and put them in this project.
+Dank BlueBuild is heavily inspired by [wayblue](https://github.com/wayblueorg/wayblue/) and aims to be pretty much like wayblue if it had Dank Linux. It started off as a personal project that I didn't intend to share publicly, but I later thought that maybe there would be someone who would appreciate a readily-available Fedora Atomic image with Dank Linux.
 
 ---
 
-## Customization
+## Images
 
-It is recommended that you [set up a new repository](https://blue-build.org/how-to/setup/) based on [`blue-build/template`](https://github.com/blue-build/template) and use a Dank BlueBuild image as the base image of your [recipe](https://blue-build.org/reference/recipe/#base-image-required). This is so that you can add your customizations on top of Dank BlueBuild instead of directly configuring it and constantly syncing your recipe with Dank BlueBuild's.
+All images include the following:
+- Dank Linux
+- [Flatseal](https://github.com/flattool/warehouse)
+- [Ghostty](https://ghostty.org/)
+- [GNOME Keyring](https://gitlab.gnome.org/GNOME/gnome-keyring)
+- [Warehouse](https://github.com/flattool/warehouse)
+- [`xdg-terminal-exec`](https://github.com/Vladimir-csp/xdg-terminal-exec)
+- [`xdg-user-dirs`](https://www.freedesktop.org/wiki/Software/xdg-user-dirs/)
+- [`xdg-utils`](https://www.freedesktop.org/wiki/Software/xdg-utils/)
+- [Dank BlueBuild features](#features)
 
-However, you may also use this repository as a template if you'd like to apply your customizations directly and basically make your own BlueBuild project.
+### `dank-bluebuild-hyprland`
+
+
+
+### `dank-bluebuild-hyprland-minimal`
 
 ---
 
@@ -20,9 +33,6 @@ However, you may also use this repository as a template if you'd like to apply y
 
 > [!WARNING]
 > BlueBuild: [This is an experimental feature](https://www.fedoraproject.org/wiki/Changes/OstreeNativeContainerStable), try at your own discretion.
-
-> [!NOTE]
-> I personally have had no problems with rebasing.
 
 To rebase an existing atomic Fedora installation to the latest build of a Dank BlueBuild image (e.g. `dank-bluebuild-hyprland`):
 
@@ -53,7 +63,7 @@ The `latest` tag will automatically point to the latest build. That build will s
 > [!NOTE]
 > On Windows, I installed the BlueBuild CLI tool using [its GitHub install script](https://github.com/blue-build/cli#github-install-script) on a Docker-integrated WSL 2 instance. Maybe you could try this for yourself.
 
-To install `dank-bluebuild-hyprland` from an ISO, you must first run the following command to build an ISO:
+To install a Dank BlueBuild image (e.g. `dank-bluebuild-hyprland`) from an ISO, you must first run the following command to build an ISO:
 ```
 sudo bluebuild generate-iso --iso-name weird-os.iso image ghcr.io/quijadah/dank-bluebuild-hyprland
 ```
@@ -71,9 +81,71 @@ cosign verify --key cosign.pub ghcr.io/quijadah/dank-bluebuild-hyprland
 
 ---
 
+## Customization
+
+It is recommended that you [set up a new repository](https://blue-build.org/how-to/setup/) based on [`blue-build/template`](https://github.com/blue-build/template) and use a Dank BlueBuild image as the base image of your [recipe](https://blue-build.org/reference/recipe/#base-image-required). This is so you can add your customizations on top of Dank BlueBuild instead of directly configuring it, such that you only need to maintain your own customizations and not constantly update your recipe to sync with Dank BlueBuild's.
+
+### About Terminal Emulators
+
+`xdg-terminal-exec` is used to set Ghostty as the "fallback terminal emulator" via , so I recommend not removing Ghostty from your recipe. Instead, add your preferred terminal emulator to your recipe and set it as the default.
+
+To set a default terminal emulator, please create `xdg-terminals.list` in `files/system/etc/skel/.config/` or `~/.config/` and write to it the name of your preferred terminal emulator's `.desktop` file.
+
+If you really want to get rid of Ghostty, then make sure to edit [`files/system/usr/share/xdg-terminal-exec/xdg-terminals.list`](/files/system/usr/share/xdg-terminal-exec/xdg-terminals.list) accordingly.
+
+### Add-on scripts for `post-login-setup`
+
+You can add your own scripts in `files/system/usr/libexec/dank-bluebuild/post-login-setup/script.d` for your own convenience post-install or post-rebase.
+
+<details>
+    <summary>Example `post-login-setup` add-on script</summary>
+
+    ```
+    #!/usr/bin/env bash
+
+    set -euo pipefail
+
+    abort_script() {
+        echo "Script interrupted." >&2
+        exit 1
+    }
+    trap abort_script INT
+
+    # The main setup script relies on the above to function properly.
+    # You can write whatever you need below.
+
+    failed() {
+        echo "Failed to execute command." >&2
+        exit 1
+    }
+
+    # For non-sudo commands
+    if [ "$EUID" -ne 0 ]; then
+        command || failed
+    else
+        sudo -u "$SUDO_USER" command || failed 
+    fi
+
+    # For sudo commands
+    if [ "$EUID" -ne 0 ]; then
+        sudo command || failed
+    else
+        command || failed 
+    fi
+
+    echo "Successfully executed command."
+    exit 0
+    ```
+
+</details>
+
+- Check out [my personal BlueBuild image](https://github.com/QuijadaH/dank-bluebuild-personal) for inspiration or a demonstration.
+
+---
+
 ## Features
 
-### `skel-init.service` ([To file](/files/systemd/system/skel-init.service))
+### `skel-init.service` ([To file](files/systemd/system/skel-init.service))
 
 > I added this because I thought it would be a hassle to create and configure the needed dotfiles after rebasing. Although BlueBuild has a `chezmoi` module, I thought using it just to initialize some default configurations was unnecessary.
 
@@ -87,67 +159,16 @@ For a new user from a fresh install or that was manually added, the nature of `/
 
 This will [automatically run](files/system/etc/xdg/autostart/post-login-setup.desktop) a bunch of [setup scripts](/files/system/usr/libexec/dank-bluebuild/post-login-setup/script.d/) for you after logging in.
 
-This setup scripts in this image do the following:
-- Disable the auto-reinstallation of default user Flatpaks.
-    - Allows you to uninstall the pre-installed user Flatpaks.
-- Disable `skel-init.service` after it runs once.
-    - Makes sure that `skel-init.service` won't accidentally interfere with your home directory.
-- Sync DankGreeter to the user theme.
-    - For a more consistent aesthetic.
-
-You can add your own scripts to `files/system/usr/libexec/dank-bluebuild/post-login-setup/script.d` for your own convenience post-install or post-rebase.
-
-#### Example `post-login-setup` script
-```
-#!/usr/bin/env bash
-
-set -euo pipefail
-
-abort_script() {
-    echo "Script interrupted." >&2
-    exit 1
-}
-trap abort_script INT
-
-# The main setup script relies on the above to function properly.
-# You can write whatever you need below.
-
-failed() {
-    echo "Failed to execute command." >&2
-    exit 1
-}
-
-# For non-sudo commands
-if [ "$EUID" -ne 0 ]; then
-    command || failed
-else
-    sudo -u "$SUDO_USER" command || failed 
-fi
-
-# For sudo commands
-if [ "$EUID" -ne 0 ]; then
-    sudo command || failed
-else
-    command || failed 
-fi
-
-echo "Successfully executed command."
-exit 0
-```
-
-### `xdg-terminal-exec` (https://github.com/Vladimir-csp/xdg-terminal-exec)
-
-This is used to set Ghostty as the "fallback terminal emulator" via [`files/system/usr/share/xdg-terminal-exec/xdg-terminals.list`](/files/system/usr/share/xdg-terminal-exec/xdg-terminals.list).
-
-If you decide to install your preferred terminal emulator, please create `xdg-terminals.list` in `files/system/etc/skel/.config/` or `~/.config/` and write to it the name of your preferred terminal emulator's `.desktop` file.
+The setup scripts do the following:
+- Disabling the auto-reinstallation of default user Flatpaks, which allows you to uninstall the pre-installed user Flatpaks.
+    > [!NOTE]
+    > The system-level apps (Warehouse and Flatseal) will still be auto-reinstalled since I consider them the "core apps" for Flatpak. You can disable the auto-reinstallation of the system-level Flatpaks by running `bluebuild-flatpak-manager disable system` in the terminal.
+- Disabling `skel-init.service` after it runs once, which makes sure that `skel-init.service` won't accidentally interfere with your home directory.
+- Sync DankGreeter to the user theme for a more consistent aesthetic.
 
 ---
 
-### Notes
-- The system-level apps (Warehouse and Flatseal) will still be auto-reinstalled since I consider them the "core apps" for Flatpak. You can disable the auto-reinstallation of the system-level Flatpaks by running `bluebuild-flatpak-manager disable system` in the terminal.
-- Check out [my personal BlueBuild image](https://github.com/QuijadaH/dank-bluebuild-personal) for inspiration or a demonstration.
-
-### TO-DO
+## TO-DO
 - Provide pre-built ISOs soon via SourceForge.
 - Convert the Hypland config to Lua once Dank Linux supports it.
 - Add Niri and other Wayland compositors someday.

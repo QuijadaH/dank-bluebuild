@@ -34,7 +34,6 @@ modules:
         - gnome-keyring-pam
         - libsecret
         - shared-mime-info
-        - udisks2
         - xdg-terminal-exec
         - xdg-user-dirs
         - xdg-utils

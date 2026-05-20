@@ -22,6 +22,7 @@ modules:
         - seahorse
         - trash-cli 
         - tumbler
+        - udisks2
         - unrar
         - webp-pixbuf-loader
         
