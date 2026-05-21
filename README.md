@@ -1,4 +1,4 @@
-# Dank BlueBuild &nbsp; [![bluebuild build badge](https://github.com/quijadah/bluebuild-hyprland-dms-personal/actions/workflows/build.yml/badge.svg)](https://github.com/quijadah/bluebuild-hyprland-dms-personal/actions/workflows/build.yml)
+# Dank BlueBuild &nbsp; [![bluebuild build badge](https://github.com/quijadah/dank-bluebuild/actions/workflows/build.yml/badge.svg)](https://github.com/quijadah/bluebuild-hyprland-dms-personal/actions/workflows/build.yml)
 
 Not too opinionated [BlueBuild](https://blue-build.org/) image~~s~~ with [Dank Linux](https://danklinux.com/). Only [Hyprland](https://hypr.land/) available for now.
 
@@ -84,7 +84,7 @@ The `latest` tag will automatically point to the latest build. That build will s
 
 To install a Dank BlueBuild image (e.g. `dank-bluebuild-hyprland`) from an ISO, you must first run the following command to build an ISO:
 ```
-sudo bluebuild generate-iso --iso-name weird-os.iso image ghcr.io/quijadah/dank-bluebuild-hyprland
+sudo bluebuild generate-iso --iso-name dank-bluebuild-hyprland.iso image ghcr.io/quijadah/dank-bluebuild-hyprland
 ```
 
 Then you can flash the ISO using [Fedora Media Writer](https://docs.fedoraproject.org/en-US/fedora/latest/preparing-boot-media/#_fedora_media_writer).
