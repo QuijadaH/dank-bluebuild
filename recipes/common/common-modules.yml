@@ -3,7 +3,6 @@ modules:
     install:
       packages:
         - dconf
-        - desktop-file-utils
         - fastfetch
         - file-roller
         - firewall-config

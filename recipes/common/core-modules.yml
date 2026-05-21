@@ -29,6 +29,7 @@ modules:
   - type: dnf
     install:
       packages:
+        - desktop-file-utils
         - glib2
         - gnome-keyring
         - gnome-keyring-pam
@@ -37,7 +38,11 @@ modules:
         - xdg-terminal-exec
         - xdg-user-dirs
         - xdg-utils
-        
+    remove:
+      packages:
+        - firefox
+        - firefox-langpacks
+
   - type: default-flatpaks
     configurations:
       - notify: false
