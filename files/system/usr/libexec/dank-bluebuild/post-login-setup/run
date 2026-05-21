@@ -12,7 +12,7 @@ disable_autostart() {
         if ! sudo touch /var/lib/dank-bluebuild/post-login-setup-auto.disabled; then
             echo "Could not create the disable flag." >&2
             echo "Failed to disable autostart." >&2
-            echo "You can manually disable the autostart by creating the file '/var/lib/dank-bluebuild/post-login-setup.disabled'."
+            echo "You can manually disable the autostart by creating the file '/var/lib/dank-bluebuild/post-login-setup-auto.disabled'."
             return 1
         fi
 
@@ -110,8 +110,12 @@ SCRIPT_DIR="/usr/libexec/dank-bluebuild/post-login-setup/script.d"
 shopt -s nullglob
 SCRIPTS=( "$SCRIPT_DIR"/* )
 
+# LOG_FILE="/var/lib/dank-bluebuild/post-login-setup/log"
+# exec > >(sudo tee -a "$LOG_FILE") 2>&1 || echo "Failed to initialize logging." >&2  
+
 LOG_FILE="/var/lib/dank-bluebuild/post-login-setup/log"
 exec > >(sudo tee -a "$LOG_FILE") 2>&1 || echo "Failed to initialize logging." >&2  
+exec </dev/tty
 
 if [ "${#SCRIPTS[@]}" -ne 0 ]; then
     for script in "${SCRIPTS[@]}"; do
@@ -129,6 +133,24 @@ if [ "${#SCRIPTS[@]}" -ne 0 ]; then
             sudo touch "$STATE_PATH/$(basename "$script").done"
         fi
     done
+
+    # for script in "${SCRIPTS[@]}"; do
+    #     [[ -f "$script" && -x "$script" ]] || continue
+
+    #     if [ -f "$STATE_PATH/$(basename "$script").done" ]; then
+    #         echo "Script '$script' already completed. Skipping..."
+    #         continue
+    #     fi
+
+    #     echo "Executing '$script'..."
+
+    #     # shellcheck disable=SC2024
+    #     if ! sudo "$script" </dev/tty 2>&1 | sudo tee -a "$LOG_FILE"; then
+    #         FAILED_SCRIPTS+=("$script")
+    #     else
+    #         sudo touch "$STATE_PATH/$(basename "$script").done"
+    #     fi
+    # done
 fi
 
 if [ ${#FAILED_SCRIPTS[@]} -ne 0 ]; then
