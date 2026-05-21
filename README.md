@@ -124,11 +124,12 @@ You can add your own setup scripts in [`/usr/libexec/dank-bluebuild/post-login-s
 
     set -euo pipefail
 
-    abort_script() {
+    on_interrupt() {
+        trap - INT TERM
         echo "Script interrupted." >&2
-        exit 1
+        exit 130
     }
-    trap abort_script INT
+    trap on_interrupt INT TERM
 
     # The main setup script relies on the above to function properly.
     # You can write whatever you need below.
