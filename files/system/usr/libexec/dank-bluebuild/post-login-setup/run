@@ -54,7 +54,7 @@ autostart_prompt() {
         esac
     done
 
-    echo "You can manually run the setup again by running 'post-login-setup' with or without sudo."
+    echo "You can manually start the setup again by executing 'post-login-setup' in the terminal with or without sudo."
 }
 
 echo "### DANK BLUE BUILD SETUP ###"
