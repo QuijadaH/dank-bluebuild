@@ -30,9 +30,9 @@ failed() {
 }
 
 if [ "$EUID" -ne 0 ]; then
-    dms greeter sync || failed
+    env DMS_PRIVESC=sudo dms greeter sync || failed
 else
-    sudo -u "$SUDO_USER" dms greeter sync || failed
+    sudo -u "$SUDO_USER" env DMS_PRIVESC=sudo dms greeter sync || failed
 fi
 
 echo "Successfully synced DankGreeter."
