@@ -7,8 +7,6 @@ ConditionPathExists=!/var/lib/dank-bluebuild/skel-init/v1-done
 [Service]
 Type=oneshot
 ExecStart=/usr/libexec/dank-bluebuild/skel-init/run
-# # Disable skel-init.service after successful execution
-# ExecStartPost=/usr/bin/systemctl disable skel-init.service
 
 [Install]
 WantedBy=multi-user.target      
