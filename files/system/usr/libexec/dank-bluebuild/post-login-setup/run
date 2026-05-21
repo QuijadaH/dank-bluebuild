@@ -3,19 +3,24 @@
 set -euo pipefail
 
 disable_autostart() {
-    sudo touch /var/lib/dank-bluebuild/post-login-setup.done
+    echo "Disabling autostart..."
+    echo "Creating the disable flag for autostart..."
 
-    if [[ -f "/etc/xdg/autostart/post-login-setup.desktop" ]]; then
-        echo "Disabling setup autostart..."
-        if sudo mv "/etc/xdg/autostart/post-login-setup.desktop" "/etc/xdg/autostart/post-login-setup.desktop.lock"; then
-            echo "Successfully disabled autostart for setup."
-            return 0
-        else
-            echo "Failed to disable autostart for setup." >&2
-            echo "You can manually disable the autostart by locking or removing the file '/etc/xdg/autostart/post-login-setup.desktop'."
+    if [ -f "/var/lib/dank-bluebuild/post-login-setup-auto.disabled" ]; then
+        echo "The disable flag already exists."
+    else
+        if ! sudo touch /var/lib/dank-bluebuild/post-login-setup-auto.disabled; then
+            echo "Could not create the disable flag." >&2
+            echo "Failed to disable autostart." >&2
+            echo "You can manually disable the autostart by creating the file '/var/lib/dank-bluebuild/post-login-setup.disabled'."
             return 1
         fi
+
+        echo "Successfully created the disable flag."
+        echo "Autostart has been disabled."
     fi
+    
+    return 0
 }
 
 autostart_prompt() {

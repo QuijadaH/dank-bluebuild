@@ -5,7 +5,7 @@ Not too opinionated [BlueBuild](https://blue-build.org/) image~~s~~ with [Dank L
 Dank BlueBuild is heavily inspired by [wayblue](https://github.com/wayblueorg/wayblue/) and aims to be pretty much like wayblue if it had Dank Linux. It started off as a personal project that I didn't intend to share publicly, but I later thought that maybe there would be someone who would appreciate a readily-available Fedora Atomic image with Dank Linux.
 
 > ### TO-DO
-> - Provide pre-built ISOs soon via SourceForge.
+> - Provide pre-built ISOs via SourceForge.
 > - Convert the Hypland config to Lua once Dank Linux supports it.
 > - Add Niri and other Wayland compositors someday.
 
@@ -100,21 +100,21 @@ cosign verify --key cosign.pub ghcr.io/quijadah/dank-bluebuild-hyprland
 
 ## Customization
 
-It is recommended that you [set up a new repository](https://blue-build.org/how-to/setup/) based on [`blue-build/template`](https://github.com/blue-build/template) and use a Dank BlueBuild image as the base image of your [recipe](https://blue-build.org/reference/recipe/#base-image-required). This is so you can add your customizations on top of Dank BlueBuild instead of directly configuring it, such that you only need to maintain your own customizations and not constantly update your recipe to sync with Dank BlueBuild's.
+It is recommended that you [set up a new repository](https://blue-build.org/how-to/setup/) based on [`blue-build/template`](https://github.com/blue-build/template) and use a Dank BlueBuild image as the base for your [recipe](https://blue-build.org/reference/recipe/#base-image-required). This is so you can add your customizations on top of Dank BlueBuild instead of directly configuring it, such that you only need to maintain your own customizations and not constantly update your recipe to sync with Dank BlueBuild's.
 
- > Check out [my personal BlueBuild image](https://github.com/QuijadaH/dank-bluebuild-personal) to see how I built my own customized image on top of Dank BlueBuild.
+> Check out [my personal BlueBuild image](https://github.com/QuijadaH/dank-bluebuild-personal) to see how I built my own custom image on top of Dank BlueBuild.
 
 ### About Terminal Emulators
 
-`xdg-terminal-exec` is used to set Ghostty as the "fallback terminal emulator" via , so I recommend not removing Ghostty from your recipe. Instead, add your preferred terminal emulator to your recipe and set it as the default.
+`xdg-terminal-exec` is used to set Ghostty as the "fallback terminal emulator", so Dank BlueBuild recommends not removing Ghostty from your recipe. Instead, add your preferred terminal emulator to your recipe and set it as the default.
 
-To set a default terminal emulator, please create `xdg-terminals.list` in [`files/system/etc/skel/.config/`](files/system/etc/skel/.config) or `~/.config/` and write to it the name of your preferred terminal emulator's `.desktop` file.
+To set a default terminal emulator, please create `xdg-terminals.list` in [`/etc/skel/.config/`](files/system/etc/skel/.config) or `~/.config/` and write to it the name of your preferred terminal emulator's `.desktop` file.
 
-If you really want to get rid of Ghostty, then make sure to edit [`files/system/usr/share/xdg-terminal-exec/xdg-terminals.list`](files/system/usr/share/xdg-terminal-exec/xdg-terminals.list) accordingly.
+If you really want to get rid of Ghostty, then make sure to edit [`/usr/share/xdg-terminal-exec/xdg-terminals.list`](files/system/usr/share/xdg-terminal-exec/xdg-terminals.list) accordingly.
 
 ### Add-on setup scripts for `post-login-setup`
 
-You can add your own setup scripts in [`files/system/usr/libexec/dank-bluebuild/post-login-setup/script.d/`](files/system/usr/libexec/dank-bluebuild/post-login-setup/script.d/) for your own convenience post-install or post-rebase.
+You can add your own setup scripts in [`/usr/libexec/dank-bluebuild/post-login-setup/script.d/`](files/system/usr/libexec/dank-bluebuild/post-login-setup/script.d/) for your own convenience post-install or post-rebase.
 
 <details>
     <summary>Example `post-login-setup` add-on script</summary>
@@ -160,7 +160,20 @@ You can add your own setup scripts in [`files/system/usr/libexec/dank-bluebuild/
 
 ### Disable QoL Features
 
+Simply disable `skel-init.service` and create the file `post-login-setup-auto.disabled` in your own recipe via BlueBuild's [`systemd`](https://blue-build.org/reference/modules/systemd/) and [`script`](https://blue-build.org/reference/modules/script/) modules respectively. You can also add `post-login-setup-auto.disabled` directly into `/var/lib/dank-bluebuild/`.
 
+```
+modules:
+  - type: systemd
+    system:
+      disabled:
+        - skel-init.service
 
-### Hyprland User Overrides Index
+  - type: script
+    snippets:
+      - "touch /var/lib/dank-bluebuild/post-login-setup-auto.disabled"
+```
 
+### Hyprland User Overrides
+
+Instead of creating your own `hyprland.conf` with your preferences, Dank BlueBuild recommends putting your own Hyprland configs in `/etc/skel/.config/hypr/user/` or `~/.config/hypr/user/`. The default [`hyprland.conf`](files/hyprland/etc/skel/.config/hypr/hyprland.conf) that comes with Dank BlueBuild's Hyprland images sources `./user/*` at the very end of the file so that your configs take precedence over the default config and the DMS overrides. This is to separate your own configs from the base default config such that whatever breaks in the base config is Dank BlueBuild's to fix, and whatever breaks in your configs is yours to fix. Additionally, organizing your configs this way makes it easier to maintain. Such is the magic of modularization.
