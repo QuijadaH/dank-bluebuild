@@ -25,16 +25,27 @@ disable_autostart() {
 
 autostart_prompt() {
     while true; do
-        echo "Allow this script to automatically run again on next login to retry/complete desktop setup? (Y/n)"
+        echo "Allow this script to automatically run again on next login to retry/complete post-login setup? (Y/n)"
         read -r response
 
         case "$response" in
             [Yy]* | "" )
-                echo "The desktop setup will autostart again on next login."
+                if [ -f "/var/lib/dank-bluebuild/post-login-setup-auto.disabled" ]; then
+                    echo "Removing the disable flag..."
+                    if ! sudo rm /var/lib/dank-bluebuild/post-login-setup-auto.disabled; then
+                        echo "Failed to remove the disable flag." >&2; 
+                        echo "The post-login setup will not autostart on next login."
+                        break
+                    fi
+                    
+                    echo "Successfully removed the disable flag."
+                fi
+
+                echo "The post-login setup will autostart again on next login."
                 break
                 ;;
             [Nn]* )
-                disable_autostart || echo "The desktop setup might autostart again on next login."
+                disable_autostart
                 break
                 ;;
             * )
