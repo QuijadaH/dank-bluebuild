@@ -61,7 +61,7 @@ modules:
   - type: script
     snippets:
       - "chmod -R +x /usr/libexec/dank-bluebuild"
-      - "chmod +x /usr/local/bin/post-login-setup"
+      - "chmod +x /usr/ bin/post-login-setup"
 
   - type: systemd
     system:
