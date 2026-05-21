@@ -1,4 +1,4 @@
-# Dank BlueBuild &nbsp; [![bluebuild build badge](https://github.com/quijadah/bluebuild-hyprland-dms-personal/actions/workflows/build.yml/badge.svg)](https://github.com/quijadah/bluebuild-hyprland-dms-personal/actions/workflows/build.yml)
+# Dank BlueBuild &nbsp; [![bluebuild build badge](https://github.com/quijadah/dank-bluebuild/actions/workflows/build.yml/badge.svg)](https://github.com/quijadah/bluebuild-hyprland-dms-personal/actions/workflows/build.yml)
 
 Not too opinionated [BlueBuild](https://blue-build.org/) image~~s~~ with [Dank Linux](https://danklinux.com/). Only [Hyprland](https://hypr.land/) available for now.
 
