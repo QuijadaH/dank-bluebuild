@@ -4,7 +4,7 @@ set -euo pipefail
 
 [ "$EUID" -eq 0 ] && exit 1
 
-[ -f "/var/lib/dank-bluebuild/post-login-setup.disabled" ] && exit 0
+[ -f "/var/lib/dank-bluebuild/post-login-setup/auto.disabled" ] && exit 0
 
 scripts=( /usr/libexec/dank-bluebuild/post-login-setup/script.d/* )
 scripts_done=( "${scripts[@]/%/\.done}" )

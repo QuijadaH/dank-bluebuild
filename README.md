@@ -21,7 +21,7 @@ For a new user from a fresh install or that was manually added, the nature of `/
 
 ### `post-login-setup` ([To file](files/system/usr/libexec/dank-bluebuild/post-login-setup/run))
 
-> I added this to act as some sort of framework for the various things I usually do after a fresh install. ~~See the add-on setup scripts on my personal image.~~
+> I added this to act as some sort of framework for the various things I usually do after a fresh install. See how you can [add your own scripts](#add-on-setup-scripts-for-post-login-setup) to `post-login-setup`.
 
 This will [automatically](files/system/etc/xdg/autostart/post-login-setup.desktop) run a bunch of [setup scripts](/files/system/usr/libexec/dank-bluebuild/post-login-setup/script.d/) for you after logging in.
 
@@ -102,7 +102,7 @@ cosign verify --key cosign.pub ghcr.io/quijadah/dank-bluebuild-hyprland
 
 It is recommended that you [set up a new repository](https://blue-build.org/how-to/setup/) based on [`blue-build/template`](https://github.com/blue-build/template) and use a Dank BlueBuild image as the base for your [recipe](https://blue-build.org/reference/recipe/#base-image-required). This is so you can add your customizations on top of Dank BlueBuild instead of directly configuring it, such that you only need to maintain your own customizations and not constantly update your recipe to sync with Dank BlueBuild's.
 
-> Check out [my personal BlueBuild image](https://github.com/QuijadaH/dank-bluebuild-personal) to see how I built my own custom image on top of Dank BlueBuild.
+> Check out [my personal BlueBuild image](https://github.com/QuijadaH/personal-dank-bluebuild) to see how I built my own custom image on top of Dank BlueBuild.
 
 ### About Terminal Emulators
 
@@ -116,52 +116,48 @@ If you really want to get rid of Ghostty, then make sure to edit [`/usr/share/xd
 
 You can add your own setup scripts in [`/usr/libexec/dank-bluebuild/post-login-setup/script.d/`](files/system/usr/libexec/dank-bluebuild/post-login-setup/script.d/) for your own convenience post-install or post-rebase.
 
-<details>
-    <summary>Example `post-login-setup` add-on script</summary>
+#### Example `post-login-setup` add-on script
+```
+#!/usr/bin/env bash
 
-    ```
-    #!/usr/bin/env bash
+set -euo pipefail
 
-    set -euo pipefail
+on_interrupt() {
+    trap - INT TERM
+    echo "Script interrupted." >&2
+    exit 130
+}
+trap on_interrupt INT TERM
 
-    on_interrupt() {
-        trap - INT TERM
-        echo "Script interrupted." >&2
-        exit 130
-    }
-    trap on_interrupt INT TERM
+# The main setup script relies on the above to function properly.
+# You can write whatever you need below.
 
-    # The main setup script relies on the above to function properly.
-    # You can write whatever you need below.
+failed() {
+    echo "Failed to execute command." >&2
+    exit 1
+}
 
-    failed() {
-        echo "Failed to execute command." >&2
-        exit 1
-    }
+# For non-sudo commands
+if [ "$EUID" -ne 0 ]; then
+    command || failed
+else
+    sudo -u "$SUDO_USER" command || failed 
+fi
 
-    # For non-sudo commands
-    if [ "$EUID" -ne 0 ]; then
-        command || failed
-    else
-        sudo -u "$SUDO_USER" command || failed 
-    fi
+# For sudo commands
+if [ "$EUID" -ne 0 ]; then
+    sudo command || failed
+else
+    command || failed 
+fi
 
-    # For sudo commands
-    if [ "$EUID" -ne 0 ]; then
-        sudo command || failed
-    else
-        command || failed 
-    fi
-
-    echo "Successfully executed command."
-    exit 0
-    ```
-
-</details>
+echo "Successfully executed command."
+exit 0
+```
 
 ### Disable QoL Features
 
-Simply disable `skel-init.service` and create the file `post-login-setup-auto.disabled` in your own recipe via BlueBuild's [`systemd`](https://blue-build.org/reference/modules/systemd/) and [`script`](https://blue-build.org/reference/modules/script/) modules respectively. You can also add `post-login-setup-auto.disabled` directly into `/var/lib/dank-bluebuild/`.
+Simply disable `skel-init.service` and create the file `post-login-setup/auto.disabled` in your own recipe via BlueBuild's [`systemd`](https://blue-build.org/reference/modules/systemd/) and [`script`](https://blue-build.org/reference/modules/script/) modules respectively. You can also add `auto.disabled` directly into `/var/lib/dank-bluebuild/post-login-setup/`.
 
 ```
 modules:
