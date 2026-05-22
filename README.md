@@ -168,7 +168,7 @@ modules:
 
   - type: script
     snippets:
-      - "touch /var/lib/dank-bluebuild/post-login-setup-auto.disabled"
+      - "touch /var/lib/dank-bluebuild/post-login-setup/auto.disabled"
 ```
 
 ### Hyprland User Overrides
