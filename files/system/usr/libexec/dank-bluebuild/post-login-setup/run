@@ -87,14 +87,10 @@ sudo_keepalive() {
 sudo_keepalive &
 SUDO_LOOP_PID=$!
 
-LOGPIPE="/tmp/logpipe.$$"
-mkfifo "$LOGPIPE"
-
 # shellcheck disable=SC2329
 cleanup() {
     kill "$SUDO_LOOP_PID" 2>/dev/null || true
     sudo -K || true
-    rm -rf "$LOGPIPE"
 }
 trap cleanup EXIT
 
@@ -119,9 +115,7 @@ shopt -s nullglob
 SCRIPTS=( "$SCRIPT_DIR"/* )
 
 LOG_FILE="/var/lib/dank-bluebuild/post-login-setup/run.log"
-# shellcheck disable=SC2024
-sudo tee -a "$LOG_FILE" < "$LOGPIPE" &
-exec >"$LOGPIPE" 2>&1
+exec > >(sudo tee -a "$LOG_FILE") 2>&1
 
 if [ "${#SCRIPTS[@]}" -ne 0 ]; then
     for script in "${SCRIPTS[@]}"; do
@@ -133,7 +127,8 @@ if [ "${#SCRIPTS[@]}" -ne 0 ]; then
         fi
 
         echo "Executing '$script'..."
-        if ! sudo "$script"; then
+        # shellcheck disable=SC2024
+        if ! sudo "$script" </dev/tty >/dev/tty 2>&1; then
             FAILED_SCRIPTS+=("$script")
         else
             sudo touch "$STATE_PATH/$(basename "$script").completed"
