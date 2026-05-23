@@ -2,21 +2,20 @@
 
 set -euo pipefail
 
-VERSION="v1"
+mkdir -p /var/lib/dank-bluebuild/skel-init
+mkdir -p /var/lib/dank-bluebuild/post-login-setup/script.d
 
-[ -e "/var/lib/dank-bluebuild/skel-init/$VERSION-done" ] && exit 0
+[ -e "/var/lib/dank-bluebuild/skel-init/run.completed" ] && exit 0
 
 SKEL="/etc/skel"
 
 awk -F: '$3 >= 1000 && $3 < 65534 { print $1 ":" $6 }' /etc/passwd |
 while IFS=: read -r user home; do
     [[ -d "$home" ]] || continue
-    [[ -f "$home/.local/state/dank-blue-build/skel-init/$VERSION-done" ]] && continue
+    [[ -f "$home/.local/state/dank-bluebuild/skel-init/run.completed" ]] && continue
 
-    rsync --backup --suffix=.skel-init-"$VERSION".bak "$SKEL"/ "$home"/
+    rsync --backup --suffix=.skel-init.bak "$SKEL"/ "$home"/
     chown -R "$user:$user" "$home"
     chmod -R 700 "$home"
 done
 
-mkdir -p /var/lib/dank-bluebuild/skel-init
-touch /var/lib/dank-bluebuild/skel-init/$VERSION-done

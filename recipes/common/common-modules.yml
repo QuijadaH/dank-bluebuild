@@ -1,6 +1,10 @@
+---
+# yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
+
 modules:
   - type: dnf
     install:
+      install-weak-deps: false
       packages:
         - dconf
         - fastfetch
@@ -8,23 +12,26 @@ modules:
         - firewall-config
         - gparted
         - gvfs
+        - gvfs-archive
         - libgsf 
         - mediainfo
-        - nemo
-        - nemo-extensions
-        - nemo-fileroller
-        - nemo-preview 
         - p7zip
         - p7zip-plugins
         - poppler-glib
-        - samba-client
         - seahorse
+        - thunar
+        - thunar-archive-plugin
+        - thunar-media-tags-plugin
+        - thunar-vcs-plugin
+        - thunar-volman
         - trash-cli 
         - tumbler
         - udisks2
         - unrar
         - webp-pixbuf-loader
-        
+      exclude:
+        - gnome-shell    
+
   - type: default-flatpaks
     configurations:
       - scope: user
