@@ -34,9 +34,10 @@ modules:
 
   - type: default-flatpaks
     configurations:
-      - scope: user
+      # Somehow, this makes the build fail because they apparently don't exist in the Flathub repo.
+      - scope: user    
         install:
-          # - io.github.diegopvlk.Cine
+          - io.github.diegopvlk.Cine
           - org.onlyoffice.desktopeditors
           - org.gnome.Loupe
           - org.mozilla.firefox
