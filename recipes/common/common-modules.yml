@@ -36,7 +36,8 @@ modules:
     configurations:
       - scope: user
         install:
-          - io.github.celluloid_player.Celluloid
+          # - io.github.celluloid_player.Celluloid    # Somehow causes build to fail because it can't find the Flatpak.
+          - io.github.diegopvlk.Cine
           - org.onlyoffice.desktopeditors
           - org.gnome.Loupe
           - org.mozilla.firefox
