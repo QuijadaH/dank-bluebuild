@@ -34,12 +34,9 @@ modules:
 
   - type: default-flatpaks
     configurations:
-      - notify: false
-        scope: user
-        repo:
-          title: Flathub (user)
+      - scope: user
         install:
-          - io.github.diegopvlk.Cine
+          # - io.github.diegopvlk.Cine
           - org.onlyoffice.desktopeditors
           - org.gnome.Loupe
           - org.mozilla.firefox
