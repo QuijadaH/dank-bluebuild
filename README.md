@@ -28,11 +28,11 @@ To let `skel-init` run again, delete the `run.completed` file in `/var/lib/dank-
 
 BlueBuild's `user-flatpak-setup.service` is what installs the user Flatpaks declared in the `default-flatpaks` module. However, this service is always started by its timer after a user logs in, and thus will install the declared Flatpaks again, meaning any of the default Flatpaks that were uninstalled will be reinstalled again (like annoying bloatware you just can't get rid of).
 
-This drop-in solves that problem by making the service run only once per user, ensuring that no auto-reinstallation will happen and that the default user Flatpaks can actually be uninstalled if the user wished to.
+This drop-in solves that problem by making `user-flatpak-setup.service` run only once per user, ensuring that no auto-reinstallation will happen and that the default user Flatpaks can actually be uninstalled if the user wished to. Additionally, the timer for the service is ditched as the drop-in also makes the service automatically start only after Dank Material Shell is active. This is because the service needs to be able to send notifications or else it will fail entirely and not install the default Flatpaks at all.
 
 To reinstall all the default user Flatpaks, run `bluebuild-flatpak-manager apply user` in the terminal.
 
-To let `user-flatpak-setup.service` run again for your user, delete the `user-flatpak-setup.completed` file located in `~/.local/state/dank-bluebuild/user-flatpak-setup.completed` and then reboot.
+To let `user-flatpak-setup.service` run again for your user, delete the `user-flatpak-setup.completed` file located in `~/.local/state/dank-bluebuild/` and then reboot.
 
 > [!NOTE]
 > The system Flatpaks (Warehouse and Flatseal) will still be auto-reinstalled since I consider them the "core GUI apps" for working with Flatpak. You can disable the auto-reinstallation of the system-level Flatpaks by running `bluebuild-flatpak-manager disable system` in the terminal.
@@ -172,7 +172,7 @@ exit 0
 
 ### Disable QoL Features
 
-Simply disable `skel-init.service` and create the file `post-login-setup/auto.disabled` in your own recipe via BlueBuild's [`systemd`](https://blue-build.org/reference/modules/systemd/) and [`script`](https://blue-build.org/reference/modules/script/) modules respectively. You can also add `auto.disabled` directly into `/var/lib/dank-bluebuild/post-login-setup/`.
+Simply disable `skel-init.service` and create the file `/etc/dank-bluebuild/post-login-setup/auto.disabled` in your own recipe via BlueBuild's [`systemd`](https://blue-build.org/reference/modules/systemd/) and [`script`](https://blue-build.org/reference/modules/script/) modules respectively. You can also add said file directly into your repo's `files/` directory.
 
 ```
 modules:
@@ -183,9 +183,10 @@ modules:
 
   - type: script
     snippets:
-      - "touch /var/lib/dank-bluebuild/post-login-setup/auto.disabled"
+      - "mkdir -p /etc/dank-bluebuild/post-login-setup"
+      - "touch /etc/dank-bluebuild/post-login-setup/auto.disabled"
 ```
 
-### Hyprland User Overrides
+### Hyprland User Configs Directory
 
 Instead of creating your own `hyprland.conf` with your preferences, Dank BlueBuild recommends putting your own Hyprland configs in `/etc/skel/.config/hypr/user/` or `~/.config/hypr/user/`. The default [`hyprland.conf`](files/hyprland/etc/skel/.config/hypr/hyprland.conf) that comes with Dank BlueBuild's Hyprland images sources `./user/*` at the very end of the file so that your configs take precedence over the default config and the DMS overrides. This is to separate your own configs from the base default config such that whatever breaks in the base config is Dank BlueBuild's to fix, and whatever breaks in your configs is yours to fix. Additionally, organizing your configs this way makes it easier to maintain. Such is the magic of modularization.

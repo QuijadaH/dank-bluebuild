@@ -76,3 +76,6 @@ modules:
         - gnome-keyring-daemon.socket
         - dms
         - dsearch
+        - user-flatpak-setup.service
+      disabled:
+        - user-flatpak-setup.timer

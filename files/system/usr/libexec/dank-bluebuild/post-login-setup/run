@@ -114,7 +114,9 @@ SCRIPT_DIR="/usr/libexec/dank-bluebuild/post-login-setup/script.d"
 shopt -s nullglob
 SCRIPTS=( "$SCRIPT_DIR"/* )
 
-LOG_FILE="/var/lib/dank-bluebuild/post-login-setup/run.log"
+TIMESTAMP=$(date "+%Y-%^b-%d-%H%M")
+LOG_FILE="/var/lib/dank-bluebuild/post-login-setup/run.$TIMESTAMP.log"
+[ -f "$LOG_FILE" ] && rm "$LOG_FILE"
 exec > >(sudo tee -a "$LOG_FILE") 2>&1
 
 if [ "${#SCRIPTS[@]}" -ne 0 ]; then
@@ -128,7 +130,7 @@ if [ "${#SCRIPTS[@]}" -ne 0 ]; then
 
         echo "Executing '$script'..."
         # shellcheck disable=SC2024
-        if ! sudo "$script" </dev/tty >/dev/tty 2>&1; then
+        if ! sudo "$script" </dev/tty; then
             FAILED_SCRIPTS+=("$script")
         else
             sudo touch "$STATE_PATH/$(basename "$script").completed"
@@ -143,7 +145,7 @@ if [ ${#FAILED_SCRIPTS[@]} -ne 0 ]; then
     done
 
     echo "Please review the errors for the failed scripts." 
-    [ -f "/var/lib/dank-bluebuild/post-login-setup/log" ] && echo "View the log file '/var/lib/dank-bluebuild/post-login-setup/run.log'." >&2
+    [ -f "$LOG_FILE" ] && echo "View the log file '$LOG_FILE'." >&2
     autostart_prompt
     exit 1
 else
