@@ -34,7 +34,6 @@ modules:
 
   - type: default-flatpaks
     configurations:
-      # Somehow, this makes the build fail because they apparently don't exist in the Flathub repo.
       - scope: user    
         install:
           - io.github.diegopvlk.Cine
