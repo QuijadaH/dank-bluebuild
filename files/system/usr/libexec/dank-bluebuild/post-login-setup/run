@@ -110,30 +110,32 @@ trap on_interrupt INT TERM
 STATE_PATH="/var/lib/dank-bluebuild/post-login-setup/script.d"
 sudo mkdir -p "$STATE_PATH"
 
+HOME_STATE_PATH="$HOME/.local/state/dank-bluebuild/post-login-setup/script.d"
+mkdir -p "$HOME_STATE_PATH"
+
 SCRIPT_DIR="/usr/libexec/dank-bluebuild/post-login-setup/script.d"
 shopt -s nullglob
 SCRIPTS=( "$SCRIPT_DIR"/* )
-
-TIMESTAMP=$(date "+%Y-%^b-%d-%H%M")
-LOG_FILE="/var/lib/dank-bluebuild/post-login-setup/run.$TIMESTAMP.log"
-[ -f "$LOG_FILE" ] && rm "$LOG_FILE"
-exec > >(sudo tee -a "$LOG_FILE") 2>&1
 
 if [ "${#SCRIPTS[@]}" -ne 0 ]; then
     for script in "${SCRIPTS[@]}"; do
         [[ -f "$script" && -x "$script" ]] || continue
 
-        if [ -f "$STATE_PATH/$(basename "$script").completed" ]; then
+        script_complete_flag="$STATE_PATH/$(basename "$script").completed"
+        script_complete_flag_home="$HOME_STATE_PATH/$(basename "$script").completed"
+
+        if [ -f "$script_complete_flag" ] || [ -f "$script_complete_flag_home" ]; then
             echo "Script '$script' already completed. Skipping..."
             continue
         fi
 
         echo "Executing '$script'..."
         # shellcheck disable=SC2024
-        if ! sudo "$script" </dev/tty; then
+        if ! sudo "$script"; then
             FAILED_SCRIPTS+=("$script")
         else
-            sudo touch "$STATE_PATH/$(basename "$script").completed"
+            sudo touch "$script_complete_flag"
+            touch "$script_complete_flag_home"
         fi
     done
 fi
@@ -145,7 +147,6 @@ if [ ${#FAILED_SCRIPTS[@]} -ne 0 ]; then
     done
 
     echo "Please review the errors for the failed scripts." 
-    [ -f "$LOG_FILE" ] && echo "View the log file '$LOG_FILE'." >&2
     autostart_prompt
     exit 1
 else

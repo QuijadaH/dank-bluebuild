@@ -34,8 +34,11 @@ modules:
 
   - type: default-flatpaks
     configurations:
-      - scope: user    
+      - notify: true
+        scope: system
         install:
+          - com.github.tchx84.Flatseal
+          - io.github.flattool.Warehouse
           - io.github.diegopvlk.Cine
           - org.onlyoffice.desktopeditors
           - org.gnome.Loupe

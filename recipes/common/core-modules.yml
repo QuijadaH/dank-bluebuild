@@ -52,10 +52,6 @@ modules:
         scope: system
         repo:
           title: Flathub (system)
-        install:
-          # Core Flatpaks 
-          - com.github.tchx84.Flatseal
-          - io.github.flattool.Warehouse
       - notify: false
         scope: user
         repo:
@@ -71,6 +67,9 @@ modules:
       enabled:
         - greetd
         - skel-init.service
+        - system-flatpak-setup.service
+      disabled:
+        - system-flatpak-setup.timer
     user:
       enabled:
         - gnome-keyring-daemon.socket

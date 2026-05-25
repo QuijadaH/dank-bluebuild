@@ -7,7 +7,7 @@ Dank BlueBuild is heavily inspired by [wayblue](https://github.com/wayblueorg/wa
 > [!IMPORTANT]
 > A good chunk of the QoL features development was AI-assisted since I only had surface-level knowledge of Bash and had knew nothing about Systemd units. Once I learned enough about Bash from the back-and-forth with ChatGPT, I manually cleaned up the main script and wrote the setup scripts myself.
 
-> ### TO-DO
+> ### PLANS
 > - Provide pre-built ISOs via SourceForge.
 > - Convert the Hypland config to Lua once Dank Linux supports it.
 > - Add Niri and other Wayland compositors someday.
@@ -24,18 +24,15 @@ For a new user from a fresh install or that was manually added, the nature of `/
 
 To let `skel-init` run again, delete the `run.completed` file in `/var/lib/dank-bluebuild/skel-init/` and then reboot.
 
-### [Drop-in](files/systemd/user/user-flatpak-setup.service.d/override.conf) for `user-flatpak-setup.service`
+### [Drop-ins](files/system/etc/systemd/) for BlueBuild's Flatpak Setup Services
 
-BlueBuild's `user-flatpak-setup.service` is what installs the user Flatpaks declared in the `default-flatpaks` module. However, this service is always started by its timer after a user logs in, and thus will install the declared Flatpaks again, meaning any of the default Flatpaks that were uninstalled will be reinstalled again (like annoying bloatware you just can't get rid of).
+BlueBuild's Flatpak setup services is what installs the Flatpaks declared in the `default-flatpaks` module. However, the services for the system and user Flatpak setups always start on boot and after log-in respectively, and thus will install the declared Flatpaks again, meaning any of the default Flatpaks that were uninstalled will be reinstalled again (like annoying bloatware you just can't get rid of).
 
-This drop-in solves that problem by making `user-flatpak-setup.service` run only once per user, ensuring that no auto-reinstallation will happen and that the default user Flatpaks can actually be uninstalled if the user wished to. Additionally, the timer for the service is ditched as the drop-in also makes the service automatically start only after Dank Material Shell is active. This is because the service needs to be able to send notifications or else it will fail entirely and not install the default Flatpaks at all.
+These drop-ins solve that problem by making the Flatpak setup services run only once ever for their respective scopes, ensuring that no auto-reinstallation will happen and that the default Flatpaks can actually be uninstalled if the user wished to.
 
-To reinstall all the default user Flatpaks, run `bluebuild-flatpak-manager apply user` in the terminal.
+The drop-in for the user Flatpak setup service, in particular, will only let the setup start after Dank Material Shell is active because the setup needs to be able to send notifications or else it will fail and not install the default user Flatpaks at all.
 
-To let `user-flatpak-setup.service` run again for your user, delete the `user-flatpak-setup.completed` file located in `~/.local/state/dank-bluebuild/` and then reboot.
-
-> [!NOTE]
-> The system Flatpaks (Warehouse and Flatseal) will still be auto-reinstalled since I consider them the "core GUI apps" for working with Flatpak. You can disable the auto-reinstallation of the system-level Flatpaks by running `bluebuild-flatpak-manager disable system` in the terminal.
+To reinstall the default user Flatpaks, run `bluebuild-flatpak-manager apply [system|user|all]` in the terminal.
 
 ### [`post-login-setup`](files/system/usr/libexec/dank-bluebuild/post-login-setup/run)
 
@@ -46,7 +43,7 @@ This is a framework that will run a bunch of [setup scripts](/files/system/usr/l
 The only setup script included in Dank BlueBuild is [`sync-dankgreeter`](files/system/usr/libexec/dank-bluebuild/post-login-setup/script.d/sync-dankgreeter) which syncs your user theme to [DankGreeter](https://danklinux.com/docs/dankgreeter) using [`dms greeter sync`](https://danklinux.com/docs/dankgreeter/installation#2-sync-with-your-user-theme). However, you can [add your own scripts](#add-on-setup-scripts-for-post-login-setup) in `.../post-login-setup/script.d/`.
 
 > [!NOTE]
-> Scripts to disable `user-flatpak-setup.timer` and `skel-init.service` used to be part of `post-login-setup`, but I eventually thought that letting them disable themselves with Systemd's own directives was cleaner. Let me know if explicitly disabling them in `post-login-setup` is better.
+> Scripts to disable the Flatpak setup timers and `skel-init.service` used to be part of `post-login-setup`, but I eventually thought that letting them disable themselves with Systemd's own directives was cleaner. Let me know if explicitly disabling them in `post-login-setup` is better.
 
 ## Installation
 
@@ -60,8 +57,8 @@ The only setup script included in Dank BlueBuild is [`sync-dankgreeter`](files/s
 
 | Image | Recipe |
 |---|---|
-| `dank-bluebuild-hyprland`| [`recipe-hyprland.yml`](recipes/recipe-hyprland.yml) |
-| `dank-bluebuild-hyprland-minimal`| [`recipe-hyprland-minimal.yml`](recipes/recipe-hyprland-minimal.yml) |
+| `dank-bluebuild-hyprland` | [`recipe-hyprland.yml`](recipes/recipe-hyprland.yml) |
+| `dank-bluebuild-hyprland-minimal` | [`recipe-hyprland-minimal.yml`](recipes/recipe-hyprland-minimal.yml) |
 
 ### Rebase
 
