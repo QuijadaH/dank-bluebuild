@@ -14,8 +14,5 @@ while IFS=: read -r user home; do
     [[ -d "$home" ]] || continue
     [[ -f "$home/.local/state/dank-bluebuild/skel-init/run.completed" ]] && continue
 
-    rsync --backup --suffix=.skel-init.bak "$SKEL"/ "$home"/
-    chown -R "$user:$user" "$home"
-    chmod -R 700 "$home"
+    rsync -r --chown="$user:$user" --backup --suffix=.skel-init.bak "$SKEL"/ "$home"/
 done
-
