@@ -26,9 +26,11 @@ To let `skel-init` run again, delete the `run.completed` file in `/var/lib/dank-
 
 ### [Drop-ins](files/system/etc/systemd/) for BlueBuild's Flatpak Setup Services
 
-BlueBuild's Flatpak setup services is what installs the Flatpaks declared in the `default-flatpaks` module. However, the services for the system and user Flatpak setups always start on boot and after log-in respectively, and thus will install the declared Flatpaks again, meaning any of the default Flatpaks that were uninstalled will be reinstalled again (like annoying bloatware you just can't get rid of).
+BlueBuild's [Flatpak setup services](https://github.com/blue-build/modules/tree/main/modules/default-flatpaks/v2/post-boot) are what installs the Flatpaks declared in the `default-flatpaks` module. However, the services for the system and user Flatpak setups are always started by their timers after boot and log-in respectively, and thus will install the declared Flatpaks again, meaning any of the default Flatpaks that were uninstalled will be reinstalled again (like annoying bloatware you just can't get rid of).
 
 These drop-ins solve that problem by making the Flatpak setup services run only once ever for their respective scopes, ensuring that no auto-reinstallation will happen and that the default Flatpaks can actually be uninstalled if the user wished to.
+
+> Additionally, the drop-ins make the services not rely on the timers anymore, but I don't know if that actually changes something for the better.
 
 The drop-in for the user Flatpak setup service, in particular, will only let the setup start after Dank Material Shell is active because the setup needs to be able to send notifications or else it will fail and not install the default user Flatpaks at all.
 
