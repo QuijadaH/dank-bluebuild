@@ -45,7 +45,7 @@ This is a framework that will run a bunch of [setup scripts](/files/system/usr/l
 The only setup script included in Dank BlueBuild is [`sync-dankgreeter`](files/system/usr/libexec/dank-bluebuild/post-login-setup/script.d/sync-dankgreeter) which syncs your user theme to [DankGreeter](https://danklinux.com/docs/dankgreeter) using [`dms greeter sync`](https://danklinux.com/docs/dankgreeter/installation#2-sync-with-your-user-theme). However, you can [add your own scripts](#add-on-setup-scripts-for-post-login-setup) in `.../post-login-setup/script.d/`.
 
 > [!NOTE]
-> Scripts to disable the Flatpak setup timers and `skel-init.service` used to be part of `post-login-setup`, but I eventually thought that letting them disable themselves with Systemd's own directives was cleaner. Let me know if explicitly disabling them in `post-login-setup` is better.
+> Scripts to disable the Flatpak setups and `skel-init` services used to be part of `post-login-setup`, but I eventually thought that letting them disable themselves with Systemd's own directives was cleaner. Let me know if explicitly disabling them in `post-login-setup` is better.
 
 ## Installation
 
