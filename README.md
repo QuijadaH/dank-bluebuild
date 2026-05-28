@@ -1,17 +1,14 @@
 # Dank BlueBuild &nbsp; [![bluebuild build badge](https://github.com/quijadah/dank-bluebuild/actions/workflows/build.yml/badge.svg)](https://github.com/quijadah/bluebuild-hyprland-dms-personal/actions/workflows/build.yml)
 
-Not too opinionated [BlueBuild](https://blue-build.org/) image~~s~~ with [Dank Linux](https://danklinux.com/). Only [Hyprland](https://hypr.land/) available for now.
+> [!NOTE]
+> This is for build `20260528-44` of the Dank BlueBuild images.
+
+Not too opinionated [BlueBuild](https://blue-build.org/) images with [Dank Linux](https://danklinux.com/). Only [Hyprland](https://hypr.land/) available for now.
 
 Dank BlueBuild is heavily inspired by [wayblue](https://github.com/wayblueorg/wayblue/) and aims to be pretty much like wayblue if it had Dank Linux. It started off as a personal project that I didn't intend to share publicly, but I later thought that maybe there would be someone who would appreciate a readily-available Fedora Atomic image with Dank Linux.
 
 > [!IMPORTANT]
 > A good chunk of the QoL features development was AI-assisted since I only had surface-level knowledge of Bash and had knew nothing about Systemd units. Once I learned enough about Bash from the back-and-forth with ChatGPT, I manually cleaned up the main script and wrote the setup scripts myself.
-
-> ### PLANS
-> - Provide pre-built ISOs via SourceForge.
-> - Convert the Hypland config to Lua once Dank Linux supports it.
-> - Use Flatpak preinstall [once BlueBuild supports it](https://github.com/blue-build/modules/issues/494).
-> - Add Niri and other Wayland compositors someday.
 
 ## Quality of Life Features
 
@@ -38,8 +35,6 @@ The drop-in for the user Flatpak setup service, in particular, will only let the
 To reinstall the default user flatpaks, run `bluebuild-flatpak-manager apply [system|user|all]` in the terminal.
 
 ### [`post-login-setup`](files/system/usr/libexec/dank-bluebuild/post-login-setup/run)
-
-> I added this to do the various things I usually do after a fresh install.
 
 This is a framework that will run a bunch of [setup scripts](/files/system/usr/libexec/dank-bluebuild/post-login-setup/script.d/) for the user [automatically after logging in](files/system/etc/xdg/autostart/post-login-setup.desktop).
 
@@ -68,26 +63,31 @@ The only setup script included in Dank BlueBuild is [`sync-dankgreeter`](files/s
 > [!WARNING]
 > BlueBuild: [This is an experimental feature](https://www.fedoraproject.org/wiki/Changes/OstreeNativeContainerStable), try at your own discretion.
 
-To rebase an existing atomic Fedora installation to the latest build of a Dank BlueBuild image (e.g. `dank-bluebuild-hyprland`):
+To rebase an existing atomic Fedora installation to build `20260528-44` of a Dank BlueBuild image (e.g. `dank-bluebuild-hyprland`):
 
 - First rebase to the unsigned image, to get the proper signing keys and policies installed:
+
+  ```bash
+  rpm-ostree rebase ostree-unverified-registry:ghcr.io/quijadah/dank-bluebuild-hyprland:20260528-44
   ```
-  rpm-ostree rebase ostree-unverified-registry:ghcr.io/quijadah/dank-bluebuild-hyprland:latest
-  ```
+
 - Reboot to complete the rebase:
-  ```
-  systemctl reboot
-  ```
-- Then rebase to the signed image, like so:
-  ```
-  rpm-ostree rebase ostree-image-signed:docker://ghcr.io/quijadah/dank-bluebuild-hyprland:latest
-  ```
-- Reboot again to complete the installation
-  ```
+
+  ```bash
   systemctl reboot
   ```
 
-The `latest` tag will automatically point to the latest build. That build will still always use the Fedora version specified in `recipe.yml`, so you won't get accidentally updated to the next major version.
+- Then rebase to the signed image, like so:
+  
+  ```bash
+  rpm-ostree rebase ostree-image-signed:docker://ghcr.io/quijadah/dank-bluebuild-hyprland:20260528-44
+  ```
+
+- Reboot again to complete the installation
+
+  ```bash
+  systemctl reboot
+  ```
 
 ### ISO
 
@@ -97,20 +97,20 @@ The `latest` tag will automatically point to the latest build. That build will s
 > [!NOTE]
 > On Windows, I installed the BlueBuild CLI tool using [its GitHub install script](https://github.com/blue-build/cli#github-install-script) on a Docker-integrated WSL 2 instance. Maybe you could try this for yourself.
 
-To install a Dank BlueBuild image (e.g. `dank-bluebuild-hyprland`) from an ISO, you must first run the following command to build an ISO:
-```
-sudo bluebuild generate-iso --iso-name dank-bluebuild-hyprland.iso image ghcr.io/quijadah/dank-bluebuild-hyprland
+To install a Dank BlueBuild image (e.g. `dank-bluebuild-hyprland:20260528-44`) from an ISO, you must first run the following command to build an ISO:
+
+```bash
+sudo bluebuild generate-iso --iso-name dank-bluebuild-hyprland.iso image ghcr.io/quijadah/dank-bluebuild-hyprland:20260528-44
 ```
 
 Then you can flash the ISO using [Fedora Media Writer](https://docs.fedoraproject.org/en-US/fedora/latest/preparing-boot-media/#_fedora_media_writer).
-
 
 ### Verification
 
 These images are signed with [Sigstore](https://www.sigstore.dev/)'s [cosign](https://github.com/sigstore/cosign). You can verify the signature by downloading the `cosign.pub` file from this repo and running the following command:
 
 ```bash
-cosign verify --key cosign.pub ghcr.io/quijadah/dank-bluebuild-hyprland
+cosign verify --key cosign.pub ghcr.io/quijadah/dank-bluebuild-hyprland:20260528-44
 ```
 
 ## Customization
