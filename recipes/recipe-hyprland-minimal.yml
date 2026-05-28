@@ -7,9 +7,6 @@ description: Minimal BlueBuild image for Dank Linux and Hyprland.
 base-image: ghcr.io/blue-build/base-images/fedora-base
 image-version: 44
 
-alt-tags:
-  - no-flatpak-preinstall
-
 modules:
   - from-file: ./common/hyprland-modules.yml
   - from-file: ./common/core-modules.yml
