@@ -10,18 +10,30 @@ on_interrupt() {
 }
 trap on_interrupt INT TERM
 
-echo "Syncing DankGreeter to user theme..."
-
-failed() {
-    echo "Failed to sync DankGreeter." >&2
-    exit 1
-}
-
 if [ "$EUID" -ne 0 ]; then
-    env DMS_PRIVESC=sudo dms greeter sync || failed
+    SCRIPT_USER="$USER"
+    SCRIPT_HOME="$HOME"
 else
-    sudo -u "$SUDO_USER" env DMS_PRIVESC=sudo dms greeter sync || failed
+    SCRIPT_USER="$SUDO_USER"
+    SCRIPT_HOME="$SUDO_HOME"
 fi
 
+SCRIPT_NAME="$(basename "$0")"
+SCRIPT_STATE="/var/lib/dank-bluebuild/post-login-setup/script.d/$SCRIPT_NAME.completed"
+SCRIPT_HOME_STATE="$SCRIPT_HOME/.local/state/dank-bluebuild/post-login-setup/script.d/$SCRIPT_NAME.completed"
+
+if [ -f "$SCRIPT_STATE" ] || [ -f "$SCRIPT_HOME_STATE" ]; then
+    echo "Script '$SCRIPT_NAME' already completed."
+    exit 0
+fi
+
+echo "Syncing DankGreeter to user theme..."
+if ! sudo -u "$SCRIPT_USER" env DMS_PRIVESC=sudo dms greeter sync; then
+    echo "Failed to sync DankGreeter." >&2
+    exit 1
+fi
 echo "Successfully synced DankGreeter."
+
+mkdir -p "$(dirname "$SCRIPT_HOME_STATE")"
+touch "$SCRIPT_HOME_STATE"
 exit 0

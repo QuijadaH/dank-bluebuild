@@ -2,8 +2,4 @@
 
 set -euo pipefail
 
-if [ "$EUID" -ne 0 ]; then
-    /usr/libexec/dank-bluebuild/post-login-setup/run
-else
-    sudo /usr/libexec/dank-bluebuild/post-login-setup/run
-fi
+/usr/libexec/dank-bluebuild/post-login-setup/run

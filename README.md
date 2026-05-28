@@ -10,7 +10,7 @@ Dank BlueBuild is heavily inspired by [wayblue](https://github.com/wayblueorg/wa
 > ### PLANS
 > - Provide pre-built ISOs via SourceForge.
 > - Convert the Hypland config to Lua once Dank Linux supports it.
-> - Use Flatpak preinstall [once BlueBuild supports it](https://github.com/blue-build/modules/issues/494).
+> - Use BlueBuild's Flatpak module once it supports Flatpak Preinstall.
 > - Add Niri and other Wayland compositors someday.
 
 ## Quality of Life Features
@@ -25,21 +25,11 @@ For a new user from a fresh install or that was manually added, the nature of `/
 
 To let `skel-init` run again, delete the `run.completed` file in `/var/lib/dank-bluebuild/skel-init/` and then reboot.
 
-### [Drop-ins](files/system/etc/systemd/) for BlueBuild's Flatpak Setup Services
+### [Flatpak Preinstall](https://docs.flatpak.org/en/latest/flatpak-command-reference.html#flatpak-preinstall)
 
-BlueBuild's [Flatpak setup services](https://github.com/blue-build/modules/tree/main/modules/default-flatpaks/v2/post-boot) are what installs the flatpaks declared in the `default-flatpaks` module. However, the services for the system and user Flatpak setups are always started by their timers after boot and log-in respectively, and thus will install the declared flatpaks again, meaning any of the default flatpaks that were uninstalled will be reinstalled again (like annoying bloatware you just can't get rid of).
-
-These drop-ins solve that problem by making the Flatpak setup services run only once ever for their respective scopes, ensuring that no auto-reinstallation will happen and that the default flatpaks can actually be uninstalled if the user wished to.
-
-> Additionally, the drop-ins make the services not rely on the timers anymore, but I don't know if that actually changes something for the better.
-
-The drop-in for the user Flatpak setup service, in particular, will only let the setup start after Dank Material Shell is active because the setup needs to be able to send notifications or else it will fail and not install the default user flatpaks at all.
-
-To reinstall the default user flatpaks, run `bluebuild-flatpak-manager apply [system|user|all]` in the terminal.
+> I got the idea to use this Flatpak feature instead of BlueBuild's own `default-flatpaks` module from this [feature request for said module](https://github.com/blue-build/modules/issues/494). I will use the module once the feature is supported; for now, we'll have to make do with 
 
 ### [`post-login-setup`](files/system/usr/libexec/dank-bluebuild/post-login-setup/run)
-
-> I added this to do the various things I usually do after a fresh install.
 
 This is a framework that will run a bunch of [setup scripts](/files/system/usr/libexec/dank-bluebuild/post-login-setup/script.d/) for the user [automatically after logging in](files/system/etc/xdg/autostart/post-login-setup.desktop).
 

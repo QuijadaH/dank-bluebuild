@@ -2,6 +2,11 @@
 # yaml-language-server: $schema=https://schema.blue-build.org/recipe-v1.json
 
 modules:
+  - type: files
+    files:
+      - source: flatpak
+        destination: /
+
   - type: dnf
     install:
       install-weak-deps: false
@@ -31,16 +36,3 @@ modules:
         - webp-pixbuf-loader
       exclude:
         - gnome-shell    
-
-  - type: default-flatpaks
-    configurations:
-      - notify: true
-        scope: system
-        install:
-          - com.github.tchx84.Flatseal
-          - io.github.flattool.Warehouse
-          - io.github.diegopvlk.Cine
-          - org.onlyoffice.desktopeditors
-          - org.mozilla.firefox
-          - org.gnome.Loupe
-          - org.gnome.Papers

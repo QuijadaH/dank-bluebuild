@@ -65,6 +65,8 @@ echo "### DANK BLUE BUILD SETUP ###"
 echo "You can review the contents of this setup in '/usr/libexec/dank-bluebuild/post-login-setup/' before you proceed."
 
 if [ "$EUID" -ne 0 ]; then
+    SCRIPT_HOME="$HOME"
+
     echo "This setup requires sudo privileges."
     echo "Requesting sudo privileges... (Press Ctrl+C to cancel)"
 
@@ -76,6 +78,7 @@ if [ "$EUID" -ne 0 ]; then
 
     echo "Sudo privileges granted."
 else
+    SCRIPT_HOME="$SUDO_HOME"
     read -r -p "Press Enter to continue or Ctrl+C to cancel."
 fi
 
@@ -89,7 +92,7 @@ SUDO_LOOP_PID=$!
 
 # shellcheck disable=SC2329
 cleanup() {
-    kill "$SUDO_LOOP_PID" 2>/dev/null || true
+    sudo kill "$SUDO_LOOP_PID" 2>/dev/null || true
     sudo -K || true
 }
 trap cleanup EXIT
@@ -110,7 +113,7 @@ trap on_interrupt INT TERM
 STATE_PATH="/var/lib/dank-bluebuild/post-login-setup/script.d"
 sudo mkdir -p "$STATE_PATH"
 
-HOME_STATE_PATH="$HOME/.local/state/dank-bluebuild/post-login-setup/script.d"
+HOME_STATE_PATH="$SCRIPT_HOME/.local/state/dank-bluebuild/post-login-setup/script.d"
 mkdir -p "$HOME_STATE_PATH"
 
 SCRIPT_DIR="/usr/libexec/dank-bluebuild/post-login-setup/script.d"
@@ -135,7 +138,6 @@ if [ "${#SCRIPTS[@]}" -ne 0 ]; then
             FAILED_SCRIPTS+=("$script")
         else
             sudo touch "$script_complete_flag"
-            touch "$script_complete_flag_home"
         fi
     done
 fi
