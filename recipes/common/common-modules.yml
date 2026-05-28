@@ -41,6 +41,6 @@ modules:
           - io.github.flattool.Warehouse
           - io.github.diegopvlk.Cine
           - org.onlyoffice.desktopeditors
-          - org.gnome.Loupe
           - org.mozilla.firefox
+          - org.gnome.Loupe
           - org.gnome.Papers

@@ -1,0 +1,27 @@
+[Flatpak Preinstall com.github.tchx84.Flatseal]
+Branch=stable
+IsRuntime=false
+ 
+[Flatpak Preinstall io.github.flattool.Warehouse]
+Branch=stable
+IsRuntime=false
+
+[Flatpak Preinstall io.github.diegopvlk.Cine]
+Branch=stable
+IsRuntime=false
+
+[Flatpak Preinstall org.onlyoffice.desktopeditors]
+Branch=stable
+IsRuntime=false
+
+[Flatpak Preinstall org.mozilla.firefox]
+Branch=stable
+IsRuntime=false
+
+[Flatpak Preinstall org.gnome.Loupe]
+Branch=stable
+IsRuntime=false
+
+[Flatpak Preinstall org.gnome.Papers]
+Branch=stable
+IsRuntime=false
