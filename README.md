@@ -1,7 +1,7 @@
-# Dank BlueBuild &nbsp; [![bluebuild build badge](https://github.com/quijadah/dank-bluebuild/actions/workflows/build.yml/badge.svg)](https://github.com/quijadah/bluebuild-hyprland-dms-personal/actions/workflows/build.yml)
+# Dank BlueBuild &nbsp; [![bluebuild build badge](https://github.com/quijadah/dank-bluebuild/actions/workflows/build.yml/badge.svg)](https://github.com/quijadah/dank-bluebuild/actions/workflows/build.yml)
 
 > [!NOTE]
-> This is for build `20260529` of the Dank BlueBuild images.
+> This is for the `no-flatpak-preinstall` build of the Dank BlueBuild images, which is the last stable build that doesn't use Flatpak Preinstall yet and instead still relies on BlueBuild's `default-flatpaks` [post-boot setup](https://github.com/blue-build/modules/tree/main/modules/default-flatpaks/v2/post-boot).
 
 Not too opinionated [BlueBuild](https://blue-build.org/) images with [Dank Linux](https://danklinux.com/). Only [Hyprland](https://hypr.land/) available for now.
 
@@ -63,13 +63,13 @@ The only setup script included in Dank BlueBuild is [`sync-dankgreeter`](files/s
 > [!WARNING]
 > BlueBuild: [This is an experimental feature](https://www.fedoraproject.org/wiki/Changes/OstreeNativeContainerStable), try at your own discretion.
 
-To rebase an existing atomic Fedora installation to build `20260529` of a Dank BlueBuild image (e.g. `dank-bluebuild-hyprland`):
+To rebase an existing atomic Fedora installation to build `no-flatpak-preinstall` (`nfp`: No Flatpak Preinstall) of a Dank BlueBuild image (e.g. `dank-bluebuild-hyprland`):
 
 - First rebase to the unsigned image, to get the proper signing keys and policies installed:
 
   ```bash
-  rpm-ostree rebase ostree-unverified-registry:ghcr.io/quijadah/dank-bluebuild-hyprland:20260529
-  ```
+  rpm-ostree rebase ostree-unverified-registry:ghcr.io/quijadah/dank-bluebuild-hyprland:no-flatpak-preinstall
+  ``` (`nfp`: No Flatpak Preinstall)
 
 - Reboot to complete the rebase:
 
@@ -80,8 +80,8 @@ To rebase an existing atomic Fedora installation to build `20260529` of a Dank B
 - Then rebase to the signed image, like so:
   
   ```bash
-  rpm-ostree rebase ostree-image-signed:docker://ghcr.io/quijadah/dank-bluebuild-hyprland:20260529
-  ```
+  rpm-ostree rebase ostree-image-signed:docker://ghcr.io/quijadah/dank-bluebuild-hyprland:no-flatpak-preinstall
+  ``` (`nfp`: No Flatpak Preinstall)
 
 - Reboot again to complete the installation
 
@@ -97,11 +97,11 @@ To rebase an existing atomic Fedora installation to build `20260529` of a Dank B
 > [!NOTE]
 > On Windows, I installed the BlueBuild CLI tool using [its GitHub install script](https://github.com/blue-build/cli#github-install-script) on a Docker-integrated WSL 2 instance. Maybe you could try this for yourself.
 
-To install a Dank BlueBuild image (e.g. `dank-bluebuild-hyprland:20260529`) from an ISO, you must first run the following command to build an ISO:
+To install a Dank BlueBuild image (e.g. `dank-bluebuild-hyprland:no-flatpak-preinstall`) (`nfp`: No Flatpak Preinstall) from an ISO, you must first run the following command to build an ISO:
 
 ```bash
-sudo bluebuild generate-iso --iso-name dank-bluebuild-hyprland.iso image ghcr.io/quijadah/dank-bluebuild-hyprland:20260529
-```
+sudo bluebuild generate-iso --iso-name dank-bluebuild-hyprland.iso image ghcr.io/quijadah/dank-bluebuild-hyprland:no-flatpak-preinstall
+``` (`nfp`: No Flatpak Preinstall)
 
 Then you can flash the ISO using [Fedora Media Writer](https://docs.fedoraproject.org/en-US/fedora/latest/preparing-boot-media/#_fedora_media_writer).
 
@@ -110,8 +110,8 @@ Then you can flash the ISO using [Fedora Media Writer](https://docs.fedoraprojec
 These images are signed with [Sigstore](https://www.sigstore.dev/)'s [cosign](https://github.com/sigstore/cosign). You can verify the signature by downloading the `cosign.pub` file from this repo and running the following command:
 
 ```bash
-cosign verify --key cosign.pub ghcr.io/quijadah/dank-bluebuild-hyprland:20260529
-```
+cosign verify --key cosign.pub ghcr.io/quijadah/dank-bluebuild-hyprland:no-flatpak-preinstall
+``` (`nfp`: No Flatpak Preinstall)
 
 ## Customization
 
